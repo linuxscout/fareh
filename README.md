@@ -1,10 +1,11 @@
-#Fareh فارح
+# Fareh فارح
 
 القواعد العربية للتدقيق النحوي والأسلوبي
 Arabic rules database for grammar and style checking
 
 ## Description
 Fareh is a database of rules applied to check grammar and languaage checking, it contains list of common errors patterns.
+
 It will be used especially for LanguageTool grammar and style checker.[LanguageTool grammar and style checker.](http://languagetool.org) 
 
 #### Developpers: 
@@ -12,11 +13,10 @@ It will be used especially for LanguageTool grammar and style checker.[LanguageT
     taha dot zerrouki at gmail dot com
 
 Sohaib Afifi: http://sohaibafifi.com
-Features |   value
 
--
----------|---------------------------------------------------------------------------------
-Authors  | [Authors.md](https://github.com/linuxscout/fareh/master/AUTHORS.md)
+Features |   value
+------------|---------------------------------------------------------------------------
+Authors   | [Authors.md](https://github.com/linuxscout/fareh/master/AUTHORS.md)
 Release  | 0.1 
 License  |[GPL](https://github.com/linuxscout/fareh/master/LICENSE)
 Tracker  |[linuxscout/Fareh/Issues](https://github.com/linuxscout/fareh/issues)
@@ -54,9 +54,6 @@ or in bibtex format
 
 
 ### Requirements
-``` 
-
-```
  - PyArabic: Arabic language tools library   : http://pypi.pyton/pyarabic
 
 
@@ -82,7 +79,7 @@ make test
 
 * file/directory    category    description 
 
-data/	A list of rules files
+* data/	A list of rules files
 
 
 
