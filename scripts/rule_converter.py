@@ -51,29 +51,33 @@ class rule_converter:
         self.id = 0
         self.version = version
         self.field_id={
-            'id':0,          #   رقم
-            'rule_id':1,     #    رقم القاعدة
-            'status':2,      # الحالة
-            'category':3,    # صنف الخطأ
-            'pattern':4,     # النمط
-            'suggestions':5,   #المستبدل
-            
-            'note':6,        #  الملاحظة
-            'wrong_example':7,     #مثال خطأ
-            'correct_example':8,        # مثال صحيح
+            'id':0,  ##الرقم الأصلي
+            'rule_id':1,  #رقم القاعدة
+            'status':2,  #الحالة
+            'unvocalized':3,  #غير مشكول للبحث
+            'category':4,  #صنف الخطأ
+            'context':5,  #السياق
+            'pattern':6,  #الخطأ
+            'suggestions':7,  #التصحيح
+            'note':8,  #ملاحظة1
+            'wrong_example':9,  #مثال خاطئ
+            'correct_example':10,  #مثال صحيح
+
         }
         #give the display order for text format display
         self.display_order=[
-            'id',          #   رقم
-            'rule_id',     #    رقم القاعدة
-            'status',      # الحالة
-            'category',    # صنف الخطأ
-            'pattern',     # النمط
-            'suggestions',   #المستبدل
-            
-            'note',        #  الملاحظة
-            'wrong_example',     #مثال خطأ
-            'correct_example',        # مثال صحيح
+            'id',  ##الرقم الأصلي
+            'rule_id',  #رقم القاعدة
+            'status',  #الحالة
+            'unvocalized',  #غير مشكول للبحث
+            'category',  #صنف الخطأ
+            'context',  #السياق
+            'pattern',  #الخطأ
+            'suggestions',  #التصحيح
+            'note',  #ملاحظة1
+            'wrong_example',  #مثال خاطئ
+            'correct_example',  #مثال صحيح
+
              ]
         self.boolean_fields=[
                 ]                
@@ -127,7 +131,10 @@ class rule_converter:
         Add a new to the dict
         """
         self.id += 1
-        fields = self.treat_tuple(noun_row) 
+        fields = self.treat_tuple(noun_row)
+        # add only given category
+        if self.category != "all" and fields.get("category","") != self.category:
+            return ""
         items=[];
         for k in range(len(self.display_order)):
             key = self.display_order[k];

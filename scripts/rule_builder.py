@@ -49,6 +49,10 @@ class rule_builder:
         """ add pattern """
         self.pattern = araby.tokenize(self.clean(pattern))
         
+    def add_context(self, context):
+        """ add context """
+        self.context = araby.tokenize(self.clean(context))
+        
     def add_suggestions(self, suggestions=[]):
         """ add suggestion """
         self.suggestions = self.clean(suggestions.split('|'))
@@ -78,9 +82,12 @@ class rule_builder:
         clean a string from unnecessary whitespaces
         """
         if type(strng) == str or type(strng) == unicode:
+            strng = araby.strip_tatweel(strng)
             return re.sub(u'\s+', ' ', strng).strip()
         if type(strng) == list:
-            return [re.sub(u'\s+', ' ', s).strip() for s in strng]
+            l= [re.sub(u'\s+', ' ', s).strip() for s in strng]
+            return [araby.strip_tatweel(s) for s in l]
+            
         else:
             return strng
     
@@ -136,6 +143,7 @@ class rule_builder:
         # prepare pattern
         pattern = ""
         for token in self.pattern:
+            token = araby.strip_tashkeel(token)
             pattern += u"\t\t\t<token>%s</token>\n"%token
         # prepare suggestions
         suggestions = ""
@@ -152,13 +160,15 @@ class rule_builder:
             exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)
             #~ examples +=u"<example correction='%s'>\u020B %s\u020C</example>"%(corrections, exmp)
             #~ examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp)
-            examples +=u"<example type='incorrect'> %s </example>\n"%(exmp)
+            #~ examples +=u"<example type='incorrect'> %s </example>\n"%(exmp)
+            examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp)
+            
         for exmp in self.examples["correct"]:
             #~ exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)
             examples +=u"<example type='correct'> %s </example>"%(exmp)
         rulexml = u"""\t<rule id ='unsorted%03.d' name='rule_%s'>
 \t\t<pattern>
-%s\t\t</pattern>
+<marker>%s</marker>\t\t</pattern>
 \t\t<message>%s\t\t</message>
 \t\t%s
 \t</rule>

@@ -63,16 +63,23 @@ class rule_converter_xml(rule_converter.rule_converter):
         Add a new to the dict
         """
         self.id += 1
-        fields = self.treat_tuple(noun_row) 
+        fields = self.treat_tuple(noun_row)
+        
         status =fields.get("status", False)
         if status == "done":
+            return ""        
+        # add only given category
+        if self.category != "all" and fields.get("category","") != self.category:
             return ""
+        
+
         rb = self.builder
         rb.reset()
-        rb.add_rulename(self.id, u"%s_%3d"%(fields['category'], self.id))
-        rb.add_pattern(fields["pattern"])
+        name = araby.strip_tashkeel(fields['pattern'])
+        rb.add_rulename(self.id, u"%s_%3d"%(name, self.id))
+        rb.add_context(fields["context"])
         rb.add_message(fields['note'])
-        rb.add_marker("")
+        rb.add_pattern(fields["pattern"])
         rb.add_suggestions(fields['suggestions'])
         rb.add_example(fields['wrong_example'], fields['suggestions'],"")
         rb.add_example(fields['correct_example'], fields['suggestions'],"", correct=True)
