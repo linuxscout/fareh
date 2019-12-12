@@ -46,9 +46,11 @@ or in bibtex format
 
 ## Features  مزايا
 <div dir=rtl>
+
 - تسهيل بناء قواعد بصيغة xml لإثراء برنامج أداة اللغة
 - صيغة مقروءة برمجيا
 - متابعة التقدم في بناء القواعد
+
 </div>
 - Facilitate build rules in xml format for LanguageTool grammar checker.
 - Machine readable format
@@ -61,8 +63,11 @@ or in bibtex format
  - PyArabic: Arabic language tools library   : http://pypi.pyton/pyarabic
 
 
-<div dir=rtl>
+
+
 ## أصل التسمية
+
+<div dir=rtl>
 سمي هذا البرنامج نسبة إلى الشيخ محمد فارح الجزائري، أستاذ صحفي لغوي أشتهر بعمله في التدقيق اللغوي وإعداده برنامجا إذاعيا "لغتنا الجميلة" في الإذاعة الجزائرية.
 
 [المزيد عن الشيخ محمد فارح ](https://ar.wikipedia.org/wiki/%D9%85%D8%AD%D9%85%D8%AF_%D9%81%D8%A7%D8%B1%D8%AD_(%D8%AC%D8%B2%D8%A7%D8%A6%D8%B1%D9%8A))
