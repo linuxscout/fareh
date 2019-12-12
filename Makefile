@@ -29,5 +29,8 @@ ods:
 	$(LIBREOFFICE) --headless --convert-to "csv:Text - txt - csv (StarCalc):9,34,UTF8" --outdir $(DATA_DIR_OUT)/ $(DATA_DIR)/*.ods
 
 oneword:CATEGORY=oneword
-convert test oneword:ods
+spell:CATEGORY=spell
+gender:CATEGORY=gender
+expression:CATEGORY=expression
+convert test oneword spell gender expression:ods
 	python2 $(SCRIPT)/grammar_csv2xml.py -t $(CATEGORY) -v $(VERSION) -f $(DATA_DIR_OUT)/$(RULES_CANDIDATES) > $(OUTPUT)/rules-candidates.xml

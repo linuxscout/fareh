@@ -87,7 +87,9 @@ class rule_converter:
             "expression":u"تعبير",
             "jar":u"حرف جر",    
             "verb":u"فعل",
+            "gender":u"نوع",
             "adjective":u"صفة",
+            "spell":u"خطأ إملائي",
             "all":u"كل",
         }
         counter_table={
