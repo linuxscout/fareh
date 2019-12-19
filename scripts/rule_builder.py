@@ -142,7 +142,8 @@ class rule_builder:
         """
         # prepare pattern
         pattern = ""
-        for token in self.pattern:
+        #~ for token in self.pattern:
+        for token in self.context:
             token = araby.strip_tashkeel(token)
             pattern += u"\t\t\t<token>%s</token>\n"%token
         # prepare suggestions
