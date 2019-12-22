@@ -50,6 +50,7 @@ class rule_converter_xml(rule_converter.rule_converter):
         """
         rule_converter.rule_converter.__init__(self, category, version)        
         self.builder = rule_builder.rule_builder()
+        
     def add_header(self,):
         """
         add the header for new dict
@@ -76,6 +77,7 @@ class rule_converter_xml(rule_converter.rule_converter):
         rb = self.builder
         rb.reset()
         name = araby.strip_tashkeel(fields['pattern'])
+        rb.set_category( fields.get("category",""))
         rb.add_rulename(self.id, u"%s_%3d"%(name, self.id))
         rb.add_context(fields["context"])
         rb.add_message(fields['note'])

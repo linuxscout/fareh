@@ -118,6 +118,115 @@ class rule_builder:
                 sub_set = -1
 
         return sub_set
+
+    
+    def make_pattern(self,):
+        """ make pattern """
+        pattern = ""
+        tokens = [araby.strip_tashkeel(t) for t in self.context]
+        if self.category == u"صفة":
+            if len(tokens) >= 2:
+                pattern = u"""<unify>
+          <feature id="definite"/><feature id="gender"/><feature id="case"/> <feature id="number"/>
+          <token inflected="yes">%s</token>
+          <marker><token inflected="yes"  postag="N.*;.*;--.?" postag_regexp="yes">%s</token></marker>
+        </unify>"""%(tokens[0], tokens[1])
+            # treat extra tokens in a context
+            if len(tokens) > 2:
+                for token in self.context[2:]:
+                    token = araby.strip_tashkeel(token)
+                    pattern += u"\t\t\t<token>%s</token>\n"%token                
+        elif self.category == u"كلمة واحدة":
+            if len(tokens) >= 1:
+                # one word is often wrong
+                pattern = u"""<marker><token regexp="yes">(&procletics;)?%s</token></marker>"""%(tokens[0])
+            # treat extra tokens in a context
+            if len(tokens) > 1:
+                for token in self.context[1:]:
+                    token = araby.strip_tashkeel(token)
+                    pattern += u"\t\t\t<token>%s</token>\n"%token                
+            
+        else:
+            for token in self.context:
+                token = araby.strip_tashkeel(token)
+                pattern += u"\t\t\t<token>%s</token>\n"%token
+            pattern = "<marker>%s</marker>"%pattern
+        return pattern
+        
+    def make_context(self,):
+        """ add context """
+        pass
+    def make_suggestions(self, ):
+        """ add suggestion """
+        suggestions = ""
+        if self.category == u"صفة":
+            suggestions = """<match no="1"/>&nbsp;"""            
+            for sug in self.suggestions:
+                sug_tokens = araby.tokenize(sug)
+                sug_tokens = [araby.strip_lastharaka(s) for s in sug_tokens]
+                tokens = [araby.strip_tashkeel(t) for t in self.context]
+                if len(tokens) >= 2 :
+                    match = tokens[1]
+                else:
+                    match = "TODO"
+                if len(sug_tokens) >= 2 :
+                    suggest = sug_tokens[1]
+                else:
+                    suggest = sug
+                suggestions += u"""\t\t\t<suggestion><match no="2" regexp_match="%s" regexp_replace="%s"/></suggestion>\n"""%(match,suggest)
+        elif self.category == u"كلمة واحدة":
+            suggestions = ""            
+            for sug in self.suggestions:
+                sug_tokens = araby.tokenize(sug)
+                sug_tokens = [araby.strip_lastharaka(s) for s in sug_tokens]
+                tokens = [araby.strip_tashkeel(t) for t in self.context]
+                if len(tokens) >= 1 :
+                    match = tokens[0]
+                else:
+                    match = "TODO"
+                if len(sug_tokens) >= 1 :
+                    suggest = sug_tokens[0]
+                else:
+                    suggest = sug
+                suggestions += u"""\t\t\t<suggestion><match no="1" regexp_match="%s" regexp_replace="%s"/></suggestion>\n"""%(match,suggest)            
+            
+        else:
+            for sug in self.suggestions:
+                suggestions += u"\t\t\t<suggestion>%s</suggestion>\n"%sug
+        return suggestions
+
+    def make_marker(self, marker):
+        """ add marker """
+        self.marker = araby.tokenize(self.clean(marker))
+        
+    def make_message(self, suggestions):
+        """ add message """
+        # prepare message
+        if not self.message:
+            self.message = u"يفضل أن يقال:"
+        message = u"%s \n%s"%(self.message, suggestions)
+        return message
+
+    
+    def make_examples(self,):
+        """ make xml format example """
+        corrections = u"|".join(self.suggestions)
+        examples = ""
+        for exmp in self.examples["incorrect"]:
+            pat = araby.strip_tashkeel(u" ".join(self.pattern)) # a list of tokens
+            exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)
+            #~ examples +=u"<example correction='%s'>\u020B %s\u020C</example>"%(corrections, exmp)
+            #~ examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp)
+            #~ examples +=u"<example type='incorrect'> %s </example>\n"%(exmp)
+            examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp)
+            
+        for exmp in self.examples["correct"]:
+            #~ exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)
+            examples +=u"<example type='correct'> %s </example>"%(exmp)
+        return examples
+
+
+
     def build(self, ):
         """ build actual rule treat rule to be displayed as LT grammar XML
     
@@ -140,36 +249,19 @@ class rule_builder:
             rule['wrong_example']  ;
             rule['correct_example'];    
         """
+        # every part is generated according to category
         # prepare pattern
-        pattern = ""
-        #~ for token in self.pattern:
-        for token in self.context:
-            token = araby.strip_tashkeel(token)
-            pattern += u"\t\t\t<token>%s</token>\n"%token
+        pattern = self.make_pattern()
         # prepare suggestions
-        suggestions = ""
-        for sug in self.suggestions:
-            suggestions += u"\t\t\t<suggestion>%s</suggestion>\n"%sug
+        suggestions = self.make_suggestions()
         # prepare message
-        if not self.message:
-            self.message = u"يفضل أن يقال:"
-        message = u"%s \n%s"%(self.message, suggestions)
-        examples =u""
-        corrections = u"|".join(self.suggestions)
-        for exmp in self.examples["incorrect"]:
-            pat = araby.strip_tashkeel(u" ".join(self.pattern)) # a list of tokens
-            exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)
-            #~ examples +=u"<example correction='%s'>\u020B %s\u020C</example>"%(corrections, exmp)
-            #~ examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp)
-            #~ examples +=u"<example type='incorrect'> %s </example>\n"%(exmp)
-            examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp)
-            
-        for exmp in self.examples["correct"]:
-            #~ exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)
-            examples +=u"<example type='correct'> %s </example>"%(exmp)
+        message = self.make_message(suggestions)
+        # prepare examples
+        examples = self.make_examples()
         rulexml = u"""\t<rule id ='unsorted%03.d' name='rule_%s'>
+
 \t\t<pattern>
-<marker>%s</marker>\t\t</pattern>
+%s\t\t</pattern>
 \t\t<message>%s\t\t</message>
 \t\t%s
 \t</rule>
