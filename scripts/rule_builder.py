@@ -22,6 +22,7 @@
 #  
 #  
 import re
+import xml.dom.minidom
 import pyarabic.araby as araby
 
 class rule_builder:
@@ -81,7 +82,8 @@ class rule_builder:
         """
         clean a string from unnecessary whitespaces
         """
-        if type(strng) == str or type(strng) == unicode:
+        #if type(strng) == str or type(strng) == unicode:
+        if type(strng) == str:#python3
             strng = araby.strip_tatweel(strng)
             return re.sub(u'\s+', ' ', strng).strip()
         if type(strng) == list:
@@ -145,6 +147,15 @@ class rule_builder:
                 for token in self.context[1:]:
                     token = araby.strip_tashkeel(token)
                     pattern += u"\t\t\t<token>%s</token>\n"%token                
+        elif self.category == u"فعل":
+            if len(tokens) >= 1:
+                # one word is often wrong
+                pattern = u"""<marker><token inflected="yes">%s</token></marker>"""%(self.pattern[0])
+            # treat extra tokens in a context
+            if len(tokens) > 1:
+                for token in self.context[1:]:
+                    token = araby.strip_tashkeel(token)
+                    pattern += u"\t\t\t<token>%s</token>\n"%token                
             
         else:
             for token in self.context:
@@ -189,6 +200,22 @@ class rule_builder:
                 else:
                     suggest = sug
                 suggestions += u"""\t\t\t<suggestion><match no="1" regexp_match="%s" regexp_replace="%s"/></suggestion>\n"""%(match,suggest)            
+        # make suggestion for verb category
+        #elif self.category == u"فعل":
+            #suggestions = ""            
+            #for sug in self.suggestions:
+                #sug_tokens = araby.tokenize(sug)
+                #sug_tokens = [araby.strip_lastharaka(s) for s in sug_tokens]
+                #tokens = [araby.strip_tashkeel(t) for t in self.context]
+                #if len(tokens) >= 1 :
+                    #match = tokens[0]
+                #else:
+                    #match = "TODO"
+                #if len(sug_tokens) >= 1 :
+                    #suggest = sug_tokens[0]
+                #else:
+                    #suggest = sug
+                #suggestions += u"""\t\t\t<suggestion><match no="1" regexp_match="%s" regexp_replace="%s"/></suggestion>\n"""%(match,suggest)            
             
         else:
             for sug in self.suggestions:
@@ -258,7 +285,7 @@ class rule_builder:
         message = self.make_message(suggestions)
         # prepare examples
         examples = self.make_examples()
-        rulexml = u"""\t<rule id ='unsorted%03.d' name='rule_%s'>
+        rulexml = u"""\t<rule id ='unsorted%03.d' name='%s'>
 
 \t\t<pattern>
 %s\t\t</pattern>
@@ -266,9 +293,23 @@ class rule_builder:
 \t\t%s
 \t</rule>
         """%(self.ruleid, self.rulename, pattern, message, examples)
+        
+
+        rulexml = self.pretty(rulexml)
         return rulexml
 
-
+    def pretty(self, rulexml):
+        """ Convert xml rule to pretty format
+        """
+        # indent xml string
+        rulexml = re.sub("[\t\n]","", rulexml)
+        #.replace("\t"," ")
+        #rulexml = rulexml.replace("\n","")
+        rulexml = xml.dom.minidom.parseString(rulexml)
+        rulexml = rulexml.toprettyxml(indent=" ")
+        rulexml = rulexml.replace('<?xml version="1.0" ?>','')
+        return rulexml
+    
 def main(args):
     # build a rule
     rb = rule_builder()
@@ -289,7 +330,10 @@ def main(args):
         rb.add_suggestions(d['suggestions'])
         rb.add_example(d['example'], d['suggestions'], d["marker"])
         rule =rb.build()
-        print(rule)
+        
+        rule_xml = xml.dom.minidom.parseString(rule)
+        rule_pretty_xml = xml.toprettyxml(indent=";")
+        print(rule_pretty_xml)
     return 0
 
 if __name__ == '__main__':

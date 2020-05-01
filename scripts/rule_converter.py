@@ -90,6 +90,7 @@ class rule_converter:
             "gender":u"نوع",
             "adjective":u"صفة",
             "spell":u"خطأ إملائي",
+            "misc":u"منوع",
             "all":u"كل",
         }
         counter_table={
@@ -100,13 +101,14 @@ class rule_converter:
             "verb":4000,
             "adjective":5000,
             "all":6000,
+            "misc":8000,
             "":10000,
         }
         self.id = counter_table.get(category, 1);
         self.category = category_table.get(category, "all");
 
         if not category: 
-            print "Fatal Error : unsupported category", category;
+            print("Fatal Error : unsupported category", category)
             exit();
         #generic Header for project
         self.headerlines = [
@@ -163,8 +165,8 @@ class rule_converter:
             try:
                 fields[key] = tuple_noun[self.field_id[key]].strip();
             except IndexError:
-                print "#"*5, "key error [%s],"%key, self.field_id[key], len(tuple_noun);
-                print tuple_noun
+                print("#"*5, "key error [%s],"%key, self.field_id[key], len(tuple_noun))
+                print(tuple_noun)
                 sys.exit()
         # change boolean fields
         for key in self.boolean_fields:

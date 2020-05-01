@@ -72,12 +72,12 @@ def main():
     version = args.version
 
     try:
-        fl = open(filename);
+        fl = open(filename, encoding='utf8');
     except:
-        print " Error :No such file or directory: %s" % filename
+        print(" Error :No such file or directory: %s" % filename)
         sys.exit(0)
 
-    line = fl.readline().decode("utf8");
+    line = fl.readline()
     text = u""
     rule_table = [];
     nb_field = 2;
@@ -88,7 +88,7 @@ def main():
             if len(liste) >= nb_field:
                 rule_table.append(liste);
 
-        line = fl.readline().decode("utf8");
+        line = fl.readline()
     fl.close();
 
     model = 0;
@@ -97,15 +97,15 @@ def main():
     # create header
     h = myconverter.add_header()
     if h:
-        print h.encode('utf8')
+        print(h)
     for tuple_rule in rule_table[:limit]:
         l = myconverter.add_record(tuple_rule)
         if l:
-            print l.encode('utf8')
+            print(l)
     # create footer
     f = myconverter.add_footer()
     if f:
-        print f.encode('utf8')
+        print(f)
         
     
 if __name__ == "__main__":

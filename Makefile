@@ -34,5 +34,7 @@ gender:CATEGORY=gender
 jar:CATEGORY=jar
 adj:CATEGORY=adjective
 expression:CATEGORY=expression
-convert test oneword spell gender expression jar adj:ods
-	python2 $(SCRIPT)/grammar_csv2xml.py -t $(CATEGORY) -v $(VERSION) -f $(DATA_DIR_OUT)/$(RULES_CANDIDATES) > $(OUTPUT)/rules-candidates.xml
+verb:CATEGORY=verb
+misc:CATEGORY=misc
+convert test oneword spell gender expression jar adj verb misc:ods
+	python3 $(SCRIPT)/grammar_csv2xml.py -t $(CATEGORY) -v $(VERSION) -f $(DATA_DIR_OUT)/$(RULES_CANDIDATES) > $(OUTPUT)/rules-candidates.xml
