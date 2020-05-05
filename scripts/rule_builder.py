@@ -23,8 +23,11 @@
 #  
 import re
 import xml.dom.minidom
-import pyarabic.araby as araby
 
+import pyarabic.araby as araby
+import pyarabic.trans
+
+import builder_const
 class rule_builder:
     """
     rule builder from  given data
@@ -42,13 +45,33 @@ class rule_builder:
         self.rulename = ""
         self.ruleid = ""
         self.category =""
+        self.category_english =""
+        self.mark_pos = 0
+        self.example_marker_pos = 0
+        self.inflected = ""
+        self.regexp = ""
+        self.postag = ""        
     def set_category(self, category=""):
         """ set the error rule category"""
         self.category = category
+    def set_category_english(self, category=""):
+        """ set the error rule category"""
+        self.category_english = category
     
-    def add_pattern(self,pattern):
+    def add_pattern(self,pattern, mark_pos = "", inflected="",  regexp="", postag="", skip=""):
         """ add pattern """
         self.pattern = araby.tokenize(self.clean(pattern))
+        try:
+            self.mark_pos = int(mark_pos) - 1
+        except ValueError:
+            self.mark_pos = 0
+        self.inflected = inflected
+        self.regexp = regexp
+        self.postag = postag
+        try:
+            self.skip = int(skip)
+        except ValueError:
+            self.skip = 0
         
     def add_context(self, context):
         """ add context """
@@ -66,8 +89,13 @@ class rule_builder:
         """ add message """
         self.message = self.clean(message)
     
-    def add_example(self, example, correction, word_to_mark, correct=False):
+    def add_example(self, example, correction, mark_pos="", correct=False):
         """ add pattern """
+        if mark_pos:
+            try:
+                self.example_mark_pos = mark_pos
+            except ValueError:
+                self.example_mark_pos = 0
         if not correct:
             self.examples['incorrect'].append(araby.strip_tashkeel(self.clean(example)))
         else:
@@ -125,7 +153,21 @@ class rule_builder:
     def make_pattern(self,):
         """ make pattern """
         pattern = ""
-        tokens = [araby.strip_tashkeel(t) for t in self.context]
+        tokens = [araby.strip_tashkeel(t) for t in self.pattern]
+        
+        # make attributes
+        attributes = []
+        if self.inflected =="yes":
+            attributes.append('inflected="yes"')
+        if self.regexp =="yes":
+            attributes.append('regexp="yes"')
+        if self.postag:
+            attributes.append('postag="%s" postag_regexp="yes"'%self.postag)
+        if self.skip:
+            attributes.append('skip="%d"'%self.skip)
+        attributes = u" ".join(attributes)
+
+
         if self.category == u"صفة":
             if len(tokens) >= 2:
                 pattern = u"""<unify>
@@ -135,38 +177,64 @@ class rule_builder:
         </unify>"""%(tokens[0], tokens[1])
             # treat extra tokens in a context
             if len(tokens) > 2:
-                for token in self.context[2:]:
+                for token in self.pattern[2:]:
                     token = araby.strip_tashkeel(token)
-                    pattern += u"\t\t\t<token>%s</token>\n"%token                
+                    pattern += u"   <token>%s</token>\n"%token                
         elif self.category == u"كلمة واحدة":
             if len(tokens) >= 1:
                 # one word is often wrong
                 pattern = u"""<marker><token regexp="yes">(&procletics;)?%s</token></marker>"""%(tokens[0])
             # treat extra tokens in a context
             if len(tokens) > 1:
-                for token in self.context[1:]:
+                for token in self.pattern[1:]:
                     token = araby.strip_tashkeel(token)
-                    pattern += u"\t\t\t<token>%s</token>\n"%token                
-        elif self.category == u"فعل":
-            if len(tokens) >= 1:
-                # one word is often wrong
-                pattern = u"""<marker><token inflected="yes">%s</token></marker>"""%(self.pattern[0])
-            # treat extra tokens in a context
-            if len(tokens) > 1:
-                for token in self.context[1:]:
+                    pattern += self.make_token(token)                
+        elif self.category in (u"فعل", ):
+            for i in range(len(tokens)):
+                if i == self.mark_pos :
+                    # one word is often wrong
+                    pattern = u"""<marker><token %s>%s</token></marker>"""%(attributes, self.pattern[i])
+                    #~ pattern = u"""<marker><token %s>%s</token></marker>"""%(attributes, self.pattern[i])
+                # treat extra tokens in a context
+                else:
+                    token = self.pattern[i]
                     token = araby.strip_tashkeel(token)
-                    pattern += u"\t\t\t<token>%s</token>\n"%token                
+                    pattern += self.make_token(token, attributes)
             
         else:
             for token in self.context:
                 token = araby.strip_tashkeel(token)
-                pattern += u"\t\t\t<token>%s</token>\n"%token
+                pattern += self.make_token(token)
             pattern = "<marker>%s</marker>"%pattern
         return pattern
         
     def make_context(self,):
         """ add context """
         pass
+    def make_ruleid(self,):
+        """ Build id rule by combining category, number and name"""
+        # romanize arabic name
+        
+        name = pyarabic.trans.convert(self.rulename,'arabic','ascii')
+        # convert spaces 
+        name = name.replace(" ", "_")
+        # remove extra chars
+        name = re.sub('[^a-zA-Z0-9_]','_',name)
+        #~ ruleid = self.category_english+"_%04d_%s"%(self.ruleid, name)
+        ruleid = u"%s_%s"%(self.ruleid, name)
+        return ruleid
+        
+    def make_token(self, token, attributes=""):
+        """ Prapare a token"""
+        # if token is stop word
+        # make it as regular expression
+        entity = builder_const.ENTITIES.get(token, token)
+        if token != entity:
+            line = u'   <token regexp="yes">%s</token>\n'%entity           
+        
+        else:
+            line = u"   <token %s>%s</token>\n"%(attributes,token)
+        return line
     def make_suggestions(self, ):
         """ add suggestion """
         suggestions = ""
@@ -175,7 +243,7 @@ class rule_builder:
             for sug in self.suggestions:
                 sug_tokens = araby.tokenize(sug)
                 sug_tokens = [araby.strip_lastharaka(s) for s in sug_tokens]
-                tokens = [araby.strip_tashkeel(t) for t in self.context]
+                tokens = [araby.strip_tashkeel(t) for t in self.pattern]
                 if len(tokens) >= 2 :
                     match = tokens[1]
                 else:
@@ -184,13 +252,13 @@ class rule_builder:
                     suggest = sug_tokens[1]
                 else:
                     suggest = sug
-                suggestions += u"""\t\t\t<suggestion><match no="2" regexp_match="%s" regexp_replace="%s"/></suggestion>\n"""%(match,suggest)
-        elif self.category == u"كلمة واحدة":
+                suggestions += u"""   <suggestion><match no="2" regexp_match="%s" regexp_replace="%s"/></suggestion>\n"""%(match,suggest)
+        elif self.category in (u"كلمة واحدة", u"فعل"):
             suggestions = ""            
             for sug in self.suggestions:
                 sug_tokens = araby.tokenize(sug)
                 sug_tokens = [araby.strip_lastharaka(s) for s in sug_tokens]
-                tokens = [araby.strip_tashkeel(t) for t in self.context]
+                tokens = [araby.strip_tashkeel(t) for t in self.pattern]
                 if len(tokens) >= 1 :
                     match = tokens[0]
                 else:
@@ -199,27 +267,11 @@ class rule_builder:
                     suggest = sug_tokens[0]
                 else:
                     suggest = sug
-                suggestions += u"""\t\t\t<suggestion><match no="1" regexp_match="%s" regexp_replace="%s"/></suggestion>\n"""%(match,suggest)            
+                suggestions += u"""   <suggestion><match no="1" regexp_match="%s" regexp_replace="%s"/></suggestion>\n"""%(match,suggest)            
         # make suggestion for verb category
-        #elif self.category == u"فعل":
-            #suggestions = ""            
-            #for sug in self.suggestions:
-                #sug_tokens = araby.tokenize(sug)
-                #sug_tokens = [araby.strip_lastharaka(s) for s in sug_tokens]
-                #tokens = [araby.strip_tashkeel(t) for t in self.context]
-                #if len(tokens) >= 1 :
-                    #match = tokens[0]
-                #else:
-                    #match = "TODO"
-                #if len(sug_tokens) >= 1 :
-                    #suggest = sug_tokens[0]
-                #else:
-                    #suggest = sug
-                #suggestions += u"""\t\t\t<suggestion><match no="1" regexp_match="%s" regexp_replace="%s"/></suggestion>\n"""%(match,suggest)            
-            
         else:
             for sug in self.suggestions:
-                suggestions += u"\t\t\t<suggestion>%s</suggestion>\n"%sug
+                suggestions += u"   <suggestion>%s</suggestion>\n"%sug
         return suggestions
 
     def make_marker(self, marker):
@@ -240,11 +292,9 @@ class rule_builder:
         corrections = u"|".join(self.suggestions)
         examples = ""
         for exmp in self.examples["incorrect"]:
-            pat = araby.strip_tashkeel(u" ".join(self.pattern)) # a list of tokens
+            ex_tokens = araby.tokenize(exmp)
+            pat = ex_tokens[self.example_marker_pos]
             exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)
-            #~ examples +=u"<example correction='%s'>\u020B %s\u020C</example>"%(corrections, exmp)
-            #~ examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp)
-            #~ examples +=u"<example type='incorrect'> %s </example>\n"%(exmp)
             examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp)
             
         for exmp in self.examples["correct"]:
@@ -285,17 +335,19 @@ class rule_builder:
         message = self.make_message(suggestions)
         # prepare examples
         examples = self.make_examples()
-        rulexml = u"""\t<rule id ='unsorted%03.d' name='%s'>
+        rule_id = self.make_ruleid()
+        rulexml = u"<!-- %s %s -->" %(rule_id," ".join(self.context))
+        rulexml += u""" <rule id ='%s' name='%s'>
 
-\t\t<pattern>
-%s\t\t</pattern>
-\t\t<message>%s\t\t</message>
-\t\t%s
-\t</rule>
-        """%(self.ruleid, self.rulename, pattern, message, examples)
+  <pattern>
+%s  </pattern>
+  <message>%s</message>
+  %s
+ </rule>
+        """%(rule_id, self.rulename, pattern, message, examples)
         
 
-        rulexml = self.pretty(rulexml)
+        #~ rulexml = self.pretty(rulexml)
         return rulexml
 
     def pretty(self, rulexml):

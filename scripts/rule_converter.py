@@ -23,6 +23,7 @@
 #  
 import re
 import time
+import sys
 import pyarabic.araby as araby
 import rule_builder
 
@@ -39,7 +40,12 @@ import rule_builder
 # * note الملاحظة
 # * Error  الخطأ
 # * Correction التصحيح
-        
+# * example_marker_pos موضع الاستبدال في المثال
+# * marker_pos موضع الاستبدال في النمط
+# * inflected تصريف 
+# * regexp   تعبير منتظم
+# * postag  وسم أقسام الكلم
+
 class rule_converter:
     """ a virtual converter of data from table to specific format
     the data is big, then every function print string """
@@ -62,6 +68,12 @@ class rule_converter:
             'note':8,  #ملاحظة1
             'wrong_example':9,  #مثال خاطئ
             'correct_example':10,  #مثال صحيح
+            'example_marker_pos':11, # موضع الاستبدال في المثال
+            'marker_pos':12, # موضع الاستبدال في النمط
+            'inflected':13, # تصريف 
+            'regexp':14,#   تعبير منتظم
+            'postag':15, #  وسم أقسام الكلم
+            'skip':16, # تخطي كلمة
 
         }
         #give the display order for text format display
@@ -77,7 +89,12 @@ class rule_converter:
             'note',  #ملاحظة1
             'wrong_example',  #مثال خاطئ
             'correct_example',  #مثال صحيح
-
+            'example_marker_pos', # موضع الاستبدال في المثال
+            'marker_pos', # موضع الاستبدال في النمط
+            'inflected', # تصريف 
+            'regexp',#   تعبير منتظم
+            'postag', #  وسم أقسام الكلم
+            'skip', # تخطي كلمة
              ]
         self.boolean_fields=[
                 ]                
@@ -106,6 +123,7 @@ class rule_converter:
         }
         self.id = counter_table.get(category, 1);
         self.category = category_table.get(category, "all");
+        self.category_english = category
 
         if not category: 
             print("Fatal Error : unsupported category", category)
@@ -166,7 +184,8 @@ class rule_converter:
                 fields[key] = tuple_noun[self.field_id[key]].strip();
             except IndexError:
                 print("#"*5, "key error [%s],"%key, self.field_id[key], len(tuple_noun))
-                print(tuple_noun)
+                print(list(enumerate(tuple_noun)))
+                print("key error", key)
                 sys.exit()
         # change boolean fields
         for key in self.boolean_fields:

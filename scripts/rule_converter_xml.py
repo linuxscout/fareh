@@ -24,6 +24,8 @@
 import re
 import time
 import pyarabic.araby as araby
+
+
 import rule_builder
 import rule_converter
 
@@ -55,8 +57,42 @@ class rule_converter_xml(rule_converter.rule_converter):
         """
         add the header for new dict
         """
-        line = "<!--" + "\n#".join(self.headerlines) + "-->\n"
+        line = """<?xml version="1.0" encoding="UTF-8"?>"""
+        line += "<!--" + "\n#".join(self.headerlines) + "-->\n"
         line +=  "<!--" + u"\t".join(self.display_order) + "-->\n"
+        line += u"""<!DOCTYPE rules 
+[<!ENTITY apostrophe "['’`´‘]">
+<!ENTITY nbsp " ">
+<!ENTITY horof_jar "في|من|إلى|على|عن|مع">
+<!ENTITY unbreak_procletics "ال">
+<!ENTITY procletics "و|ف|ال|وال|فال|ب|بال|وبال|ك|كال|وكال|فكال|ل|لل|ولل|فلل">
+<!ENTITY undef_procletics "و|ف|ب|ك|">
+<!ENTITY conj "و|ف">
+<!ENTITY encletics "ه|ها|هم|هن|ك|كما|كم|كن|ي|نا">
+<!ENTITY forms_3an "عن|عني|عنا|عنك|عنكما|عنكم|عنكن|عنه|عنها|عنهما|عنهم|عنهن">
+<!ENTITY forms_ila "إلى|إلي|إلينا|إليك|إليكما|إليكم|إليكن|إليه|إليها|إليهما|إليهم|إليهن">
+<!ENTITY forms_3ala "على|علي|علينا|عليك|عليكما|عليكم|عليكن|عليه|عليها|عليهما|عليهم|عليهن">
+<!ENTITY forms_fi "في|فينا|فيك|فيكما|فيكم|فيكن|فيه|فيها|فيهما|فيهم|فيهن">
+<!ENTITY forms_hawla "حول|حولنا|حولك|حولكما|حولكم|حولكن|حوله|حولها|حولهما|حولهم|حولهن">
+<!ENTITY forms_min "مني|من|مننا|منك|منكما|منكم|منكن|منه|منها|منهما|منهم|منهن">
+<!ENTITY forms_ma3a "مع|معنا|معك|معكما|معكم|معكن|معه|معها|معهما|معهم|معهن">
+<!ENTITY forms_bi "بي|بنا|بك|بكما|بكم|بكن|به|بها|بهما|بهم|بهن">
+<!ENTITY forms_li "لي|لنا|لك|لكما|لكم|لكن|له|لها|لهما|لهم|لهن">
+<!ENTITY forms_anna "أني|أننا|أنك|أنكما|أنكم|أنكن|أنه|أنها|أنهما|أنهم|أنهن">
+<!ENTITY forms_inna "إني|إننا|إنك|إنكما|إنكم|إنكن|إنه|إنها|إنهما|إنهم|إنهن">
+<!ENTITY allah_names "الآخر|الحميد|الحفيظ|اللطيف|المحيي|الجامع|الباطن|الولي|المقسط|الغفار|الودود|الوهاب|المانع|الشكور|الحليم|المتكبر|الحسيب|الجليل|النافع|الصبور|النور|المصور|الفتاح|مالك|الحي|الغني|الحق|الواسع|الجبار|المغني|العظيم|الباقي|الوارث|الرزاق|المهيمن|الضار|المقيت|الهادي|المتعالي|الوالي|المقتدر|المعز|الأول|القادر|الصمد|السميع|المذل|الكريم|ذو|البصير|العلي|السلام|المميت|العدل|الرافع|التواب|القهار|القابض|المعيد|المبدئ|الرشيد|المؤخر|المؤمن|الجلال|الظاهر|القيوم|الخبير|الوكيل|العزيز|الرحيم|الواجد|البر|المقدم|البديع|الغفور|الرقيب|الأحد|القدوس|الباسط|الجميل|والإكرام|المجيد|الرحمن|الرؤوف|المجيب|القوي|الخالق|الواحد|المنتقم|الملك|المعطي|المحصي|الكبير|العفو|المتين|الباعث|الماجد|الخافض|الحكم|العليم|البارئ|الشهي">
+<!ENTITY wrong_feminine "ذقن|رفات">
+<!ENTITY wrong_masculine "كتف|فخذ|ساق|ريح|بئر|يمين|ضبع">
+      ]>
+        """
+        line += u"""<rules>"""
+        return line
+
+    def add_footer(self,):
+        """
+        add the footer for new dict
+        """
+        line = """</rules>"""
         return line
          
     def add_record(self, noun_row):
@@ -76,16 +112,20 @@ class rule_converter_xml(rule_converter.rule_converter):
 
         rb = self.builder
         rb.reset()
-        name = araby.strip_tashkeel(fields['pattern'])
-        rb.set_category( fields.get("category",""))
-        rb.add_rulename(self.id, name)
-        #rb.add_rulename(self.id, u"%s_%3d"%(name, self.id))
+        name = araby.strip_tashkeel(fields['context'])
+        rb.set_category(fields.get("category",""))
+        #~ rb.set_category_english(self.category_english)
+        ruleid = fields["rule_id"]
+        if not ruleid:
+            ruleid =  self.category_english+"_%04d"%(self.id)
+
+        rb.add_rulename(ruleid, name)
         rb.add_context(fields["context"])
         rb.add_message(fields['note'])
-        rb.add_pattern(fields["pattern"])
+        rb.add_pattern(fields["pattern"], mark_pos = fields["marker_pos"], inflected=fields["inflected"],  regexp=fields["regexp"], postag=fields["postag"], skip= fields["skip"])
         rb.add_suggestions(fields['suggestions'])
-        rb.add_example(fields['wrong_example'], fields['suggestions'],"")
-        rb.add_example(fields['correct_example'], fields['suggestions'],"", correct=True)
+        rb.add_example(fields['wrong_example'], fields['suggestions'], mark_pos = fields["example_marker_pos"])
+        rb.add_example(fields['correct_example'], fields['suggestions'],correct=True)
         rule =rb.build()
         return rule
 
