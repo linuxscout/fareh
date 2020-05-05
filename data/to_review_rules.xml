@@ -1,0 +1,188 @@
+
+<rule id="watan2" name="تجربة">
+<pattern>
+    <token inflected="yes">بلاد</token>
+</pattern>
+<message>Here's another word: 
+  <suggestion><match no="1" regexp_match="بلاد" regexp_replace="وطن"/></suggestion>
+ </message>
+ <example correction="بوطنكما" type="incorrect"> <marker>ببلادكما</marker> </example>
+ <example type="correct"> بوطنكما </example>
+
+</rule>
+
+<rule id="watan1" name="تجربة الوسم">
+<pattern>
+    <token inflected="yes">بلاد</token>
+</pattern>
+<message>Here's another word: 
+    <suggestion>
+        <match no="1" postag="N.*" postag_regexp="yes">أرض</match>
+    </suggestion>
+</message>
+ <example correction="بالأرض" type="incorrect"> <marker>بالبلاد</marker> </example>
+ <example type="correct"> بأرضكما </example>
+</rule>
+
+
+
+
+
+
+<!--  Test pos suggestion -->
+  <rule id="verb_200006_Astlft_AnzhAr" name="استلفت أنظار">
+    <pattern>
+      <marker>
+        <token inflected="yes" skip="1">سَافَرَ</token>
+      </marker>
+      <token inflected="yes" postag="N.*;-B.?" postag_regexp="yes">بلاد</token>
+    </pattern>
+    <message>يفضل أن يقال: 
+   <suggestion><match no="2" postag="N.*;--.?"  postag_regexp="yes"></match></suggestion>
+
+</message>
+    <example correction="بلاده" type="incorrect"><marker>سافر</marker> ببلاده </example>
+
+  </rule>
+
+<!-- verb_206_Astlft_AnzhAr اسْتَلْفَتَ ببلاغتِه الأنظارَ -->
+  <rule id="verb_200006_Astlft_AnzhAr" name="استلفت أنظار">
+    <pattern>
+      <marker>
+        <token inflected="yes" skip="1">سَافَرَ</token>
+      </marker>
+      <token inflected="yes" postag="N.*;B-.?" postag_regexp="yes">ببلاد</token>
+    </pattern>
+    <message>يفضل أن يقال: 
+   <suggestion>اسْتَرْعَى</suggestion>
+   <suggestion><match no="2" postag="N.*;B-.?"  postag_regexp="yes"></match></suggestion>
+
+</message>
+    <example correction="بلاد" type="incorrect"><marker>سافر</marker> ببلاده </example>
+
+  </rule>
+
+
+<!--  Test pos suggestion -->
+  <rule id="verb_200006_Astlft_AnzhAr" name="الجر">
+    <pattern>
+
+        <token>أيان</token>
+      <marker>
+      <token inflected="yes" postag="N.*;.?.?U.*" postag_regexp="yes"></token>
+      </marker>
+    </pattern>
+    <message>يفضل أن يقال: 
+   <suggestion><match no="2" postag="N.*;.?.?I.*"  postag_regexp="yes"></match></suggestion>
+
+</message>
+    <example correction="الكتابين" type="incorrect">أيان <marker>الكتابان</marker> </example>
+
+  </rule>
+
+<rule id="ELUDED_TO" name="eluded to (alluded to)">
+    <pattern>
+       <token inflected="yes">ضَرَبَ</token>
+    </pattern>
+    <message>Did you mean <suggestion><match no="1" postag="V.*" postag_regexp="yes">سحب</match></suggestion>?</message>
+    <example correction="سحب">He <marker>ضرب</marker> engagement at the party.</example>
+<example correction="يسحب">He <marker>يضرب</marker> engagement at the party.</example>
+</rule>
+
+<!-- verb_253_srE_Eml سَرَّعَ العملَ -->
+  <rule id="verb_253_srE_Eml" name="سرع عمل">
+    <pattern>
+      <marker>
+		<token inflected="yes" postag="V.*;.*p.?.?;.*" postag_regexp="yes" skip="1">سَرَّعَ</token>
+      </marker>
+      <token inflected="yes" postag="N.*;--.?" postag_regexp="yes">عمل</token>
+    </pattern>
+    <message>يفضل أن يقال: أسرع العمل بدلا من سرّع العمل.
+
+   <suggestion><match no="1" regexp_match="سرع" regexp_replace="أسرَع"/></suggestion>
+</message>
+    <example correction="أسرَع" type="incorrect"><marker>سرع</marker> العمل </example>
+    <example type="correct"> أسرَعَ العملَ </example>
+  </rule>
+
+<!-- verb_258_Eda_mrD عَدَاهُ بالمرض -->
+  <rule id="verb_258_Eda_mrD" name="عداه بالمرض">
+    <antipattern>
+      <marker>
+        <token inflected="yes" skip="1">أَعْدَى</token>
+      </marker>
+      <token inflected="yes" postag="N.*;-B.?" postag_regexp="yes">مرض</token>
+    </antipattern>
+
+    <pattern>
+      <marker>
+        <token inflected="yes"  postag="V.*;.*p.?.?;.*" postag_regexp="yes"  skip="1">عَدَا</token>
+      </marker>
+      <token inflected="yes" postag="N.*;-B.?" postag_regexp="yes">مرض</token>
+    </pattern>
+    <message>(عدا): جَرَى، وسَرَق، وجَاوَزَ وتَرَك 
+   <suggestion>أَعْدَى</suggestion>
+</message>
+    <example correction="أَعْدَى" type="incorrect"><marker>عداه</marker> بالمرض </example>
+    <example type="correct"> أَعْدَاهُ بالمرض </example>
+  </rule>
+
+ <!-- verb_259_Eshb_ArD عَشَّبَ الأرضَ -->
+  <rule id="verb_259_Eshb_ArD" name="عشب أرض">
+    <antipattern>
+      <marker>
+        <token inflected="yes" regexp="yes">نَزَعَ|اِجْتَزَّ</token>
+        <token>عشب</token>
+      </marker>
+      <token inflected="yes" postag="N.*;--.?" postag_regexp="yes">أرض</token>
+    </antipattern>
+    <pattern>
+      <marker>
+        <token inflected="yes" skip="1">عَشَّبَ</token>
+      </marker>
+      <token inflected="yes" postag="N.*;--.?" postag_regexp="yes">أرض</token>
+    </pattern>
+    <message>(عَشَّبَ) فعلٌ لازم، تقول: (عَشَّبَتِ الأرضُ): كثُر عُشبها 
+   <suggestion><match no="1" regexp_match="عشب" regexp_replace="اجتزّ"/>&nbsp;عُشب</suggestion>
+   <suggestion><match no="1" regexp_match="عشب" regexp_replace="نزع"/>&nbsp;عُشب</suggestion>
+</message>
+    <example correction="اجتزّ عُشب|نزع عُشب" type="incorrect"><marker>عشب</marker> الأرض </example>
+    <example type="correct"> اجتزَّ عُشبَ الأرض </example>
+    <example type="correct"> نزع عُشبَ الأرض </example>
+  </rule>
+
+<!-- verb_263_glyt_AlmA2 غَلَيْتُ الماءَ -->
+  <rule id="verb_263_glyt_AlmA2" name="غليت الماء">
+    <pattern>
+      <marker>
+        <token inflected="yes" regexp="yes">(&conj;)?غليت(ما|م)?</token>
+      </marker>
+      <token inflected="yes" postag="N.*;--.?" postag_regexp="yes">ماء</token>
+    </pattern>
+    <message>يفضل أن يقال: 
+   <suggestion><match no="1" regexp_match="غليت" regexp_replace="أَغْلَيْت"/></suggestion>
+   <suggestion><match no="1" regexp_match="غليت" regexp_replace="غَلَّيْت"/></suggestion>
+</message>
+    <example correction="أَغْلَيْت|غَلَّيْت" type="incorrect"><marker>غليت</marker> الماء، فهو مغلي </example>
+    <example correction="فأَغْلَيْتم|فغَلَّيْتم" type="incorrect"><marker>فغليتم</marker> الماء، فهو مغلي </example>
+
+    <example type="correct"> أَغْلَيْتُ الماءَ، فهو مُغْلًى </example>
+
+  </rule
+
+<!-- verb_268_kbdh_EnA2_shdydA كَبَّدَهُ عناءً شديداً -->
+  <rule id="verb_268_kbdh_EnA2_shdydA" name="كبده عناء شديدا">
+    <pattern>
+      <marker>
+        <token inflected="yes" skip="1">كَبَّدَ</token>
+      </marker>
+      <token inflected="yes" postag="N.*;--.?" postag_regexp="yes" regexp="yes">مجهود|خسارة|خسائر|عناء</token>
+    </pattern>
+    <message>(كبَّدَتِ الشمسُ السماءَ): صارت في وَسَطها 
+   <suggestion><match no="1" regexp_match="كبد" regexp_replace="حمّل"/></suggestion>
+   <suggestion><match no="1" regexp_match="كبد" regexp_replace="جشّم"/></suggestion>
+</message>
+    <example correction="حمّل|جشّم" type="incorrect"><marker>كبده</marker> عناء شديدا </example>
+    <example type="correct">  جَشَّمَهُ عناءً شديداً </example>
+    <example type="correct"> حَمَّلَهُ  عناءً شديداً </example>
+  </rule>
