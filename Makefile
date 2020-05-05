@@ -8,7 +8,7 @@ SCRIPT :=scripts
 VERSION=0.1
 DOC="."
 RULES_CANDIDATES=ArabicCommunErrors0.2.csv
-LIBREOFFICE=libreoffice6.2
+LIBREOFFICE=libreoffice6.4
 CATEGORY=all
 default: all
 # Clean build files
@@ -37,4 +37,5 @@ expression:CATEGORY=expression
 verb:CATEGORY=verb
 misc:CATEGORY=misc
 convert test oneword spell gender expression jar adj verb misc:ods
-	python3 $(SCRIPT)/grammar_csv2xml.py -t $(CATEGORY) -v $(VERSION) -f $(DATA_DIR_OUT)/$(RULES_CANDIDATES) > $(OUTPUT)/rules-candidates.xml
+	python3 $(SCRIPT)/grammar_csv2xml.py -t $(CATEGORY) -v $(VERSION) -f $(DATA_DIR_OUT)/$(RULES_CANDIDATES) > $(OUTPUT)/rules.tmp.xml
+	xmllint --format  $(OUTPUT)/rules.tmp.xml  --output $(OUTPUT)/rules-candidates.xml
