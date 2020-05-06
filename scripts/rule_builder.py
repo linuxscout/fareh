@@ -22,6 +22,7 @@
 #  
 #  
 import re
+import sys
 import xml.dom.minidom
 
 import pyarabic.araby as araby
@@ -89,13 +90,14 @@ class rule_builder:
         """ add message """
         self.message = self.clean(message)
     
-    def add_example(self, example, correction, mark_pos="", correct=False):
+    def add_example(self, example, correction=[],  mark_pos ="", correct=False):
         """ add pattern """
         if mark_pos:
             try:
-                self.example_mark_pos = mark_pos
+                self.example_marker_pos = int(mark_pos) - 1
             except ValueError:
-                self.example_mark_pos = 0
+                self.example_marker_pos = 0
+                
         if not correct:
             self.examples['incorrect'].append(araby.strip_tashkeel(self.clean(example)))
         else:
@@ -189,18 +191,19 @@ class rule_builder:
                 for token in self.pattern[1:]:
                     token = araby.strip_tashkeel(token)
                     pattern += self.make_token(token)                
-        elif self.category in (u"فعل", ):
+        elif self.category in (u"فعل", u"متعدي بحرف",):
             for i in range(len(tokens)):
                 if i == self.mark_pos :
                     # one word is often wrong
-                    pattern = u"""<marker><token %s>%s</token></marker>"""%(attributes, self.pattern[i])
-                    #~ pattern = u"""<marker><token %s>%s</token></marker>"""%(attributes, self.pattern[i])
+                    pattern += u"""<marker>%s</marker>"""%self.make_token(self.pattern[i], attributes)
+
                 # treat extra tokens in a context
                 else:
                     token = self.pattern[i]
-                    token = araby.strip_tashkeel(token)
+                    # some categories impose diacritized tokens out of marker
+                    if self.category not in (u"متعدي بحرف",):
+                        token = araby.strip_tashkeel(token)
                     pattern += self.make_token(token, attributes)
-            
         else:
             for token in self.context:
                 token = araby.strip_tashkeel(token)
@@ -275,7 +278,7 @@ class rule_builder:
         return suggestions
 
     def make_marker(self, marker):
-        """ add marker """
+        """ make marker """
         self.marker = araby.tokenize(self.clean(marker))
         
     def make_message(self, suggestions):
@@ -291,10 +294,20 @@ class rule_builder:
         """ make xml format example """
         corrections = u"|".join(self.suggestions)
         examples = ""
+        #~ print('#********************%s'%self.example_marker_pos)
+        
         for exmp in self.examples["incorrect"]:
             ex_tokens = araby.tokenize(exmp)
-            pat = ex_tokens[self.example_marker_pos]
-            exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)
+            try:
+                pat = ex_tokens[self.example_marker_pos]
+                exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)
+
+            except:
+                pat = "Example with problem"
+                exmp = "Example with problem" + exmp
+                #~ print(exmp, self.example_marker_pos)
+                #~ sys.exit()
+
             examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp)
             
         for exmp in self.examples["correct"]:

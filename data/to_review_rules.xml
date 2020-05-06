@@ -105,35 +105,11 @@
     <example type="correct"> أسرَعَ العملَ </example>
   </rule>
 
-<!-- verb_258_Eda_mrD عَدَاهُ بالمرض -->
-  <rule id="verb_258_Eda_mrD" name="عداه بالمرض">
-    <antipattern>
-      <marker>
-        <token inflected="yes" skip="1">أَعْدَى</token>
-      </marker>
-      <token inflected="yes" postag="N.*;-B.?" postag_regexp="yes">مرض</token>
-    </antipattern>
-
-    <pattern>
-      <marker>
-        <token inflected="yes"  postag="V.*;.*p.?.?;.*" postag_regexp="yes"  skip="1">عَدَا</token>
-      </marker>
-      <token inflected="yes" postag="N.*;-B.?" postag_regexp="yes">مرض</token>
-    </pattern>
-    <message>(عدا): جَرَى، وسَرَق، وجَاوَزَ وتَرَك 
-   <suggestion>أَعْدَى</suggestion>
-</message>
-    <example correction="أَعْدَى" type="incorrect"><marker>عداه</marker> بالمرض </example>
-    <example type="correct"> أَعْدَاهُ بالمرض </example>
-  </rule>
-
  <!-- verb_259_Eshb_ArD عَشَّبَ الأرضَ -->
   <rule id="verb_259_Eshb_ArD" name="عشب أرض">
     <antipattern>
-      <marker>
         <token inflected="yes" regexp="yes">نَزَعَ|اِجْتَزَّ</token>
-        <token>عشب</token>
-      </marker>
+        <token postag="N.*;---" postag_regexp="yes">عشب</token>
       <token inflected="yes" postag="N.*;--.?" postag_regexp="yes">أرض</token>
     </antipattern>
     <pattern>
@@ -143,10 +119,10 @@
       <token inflected="yes" postag="N.*;--.?" postag_regexp="yes">أرض</token>
     </pattern>
     <message>(عَشَّبَ) فعلٌ لازم، تقول: (عَشَّبَتِ الأرضُ): كثُر عُشبها 
-   <suggestion><match no="1" regexp_match="عشب" regexp_replace="اجتزّ"/>&nbsp;عُشب</suggestion>
-   <suggestion><match no="1" regexp_match="عشب" regexp_replace="نزع"/>&nbsp;عُشب</suggestion>
+   <suggestion>اجتز&nbsp;عشب</suggestion>
+   <suggestion>نزع&nbsp;عشب</suggestion>
 </message>
-    <example correction="اجتزّ عُشب|نزع عُشب" type="incorrect"><marker>عشب</marker> الأرض </example>
+    <example correction="اجتز عشب|نزع عشب" type="incorrect"><marker>عشب</marker> الأرض </example>
     <example type="correct"> اجتزَّ عُشبَ الأرض </example>
     <example type="correct"> نزع عُشبَ الأرض </example>
   </rule>
@@ -186,3 +162,29 @@
     <example type="correct">  جَشَّمَهُ عناءً شديداً </example>
     <example type="correct"> حَمَّلَهُ  عناءً شديداً </example>
   </rule>
+
+
+
+  <rule>
+    <pattern>
+      <marker>
+        <token inflected="yes" skip="1">verb1</token>
+        <token postag="N.*" postag_regexp="yes" min="0"/> 
+        <token>on</token>
+     </marker>
+    </pattern>
+    <message>Did you means 
+   <suggestion><match no="1" regexp_match="verb1" regexp_replace="verb2"/>&nbsp;<match no="2"/></suggestion>
+</message>
+    <example correction="verb2 subject" type="incorrect"><marker>verb1 subject on </marker></example>
+    <example correction="verb2" type="incorrect"><marker>verb1 on </marker> </example>
+
+    <example type="correct"> verb2 subject </example>
+  </rule>
+
+
+
+    <rulegroup id="transitive_verbs_direct_tobe_indirect" name="المتعدي  بنفسه تصحيحه متعد بحرف">
+ <!-- TODO trans D2I-->
+    </rulegroup>
+  
