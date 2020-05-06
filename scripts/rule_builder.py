@@ -97,7 +97,6 @@ class rule_builder:
                 self.example_marker_pos = int(mark_pos) - 1
             except ValueError:
                 self.example_marker_pos = 0
-                
         if not correct:
             self.examples['incorrect'].append(araby.strip_tashkeel(self.clean(example)))
         else:
