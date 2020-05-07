@@ -93,7 +93,7 @@
   <rule id="verb_253_srE_Eml" name="سرع عمل">
     <pattern>
       <marker>
-		<token inflected="yes" postag="V.*;.*p.?.?;.*" postag_regexp="yes" skip="1">سَرَّعَ</token>
+        <token inflected="yes" postag="V.*;.*p.?.?;.*" postag_regexp="yes" skip="1">سَرَّعَ</token>
       </marker>
       <token inflected="yes" postag="N.*;--.?" postag_regexp="yes">عمل</token>
     </pattern>
@@ -187,4 +187,45 @@
     <rulegroup id="transitive_verbs_direct_tobe_indirect" name="المتعدي  بنفسه تصحيحه متعد بحرف">
  <!-- TODO trans D2I-->
     </rulegroup>
-  
+  <!-- trans_404_AfAD_AlHdyth أفَاضَ الحديثَ -->
+  <rule id="trans_404_AfAD_AlHdyth" name="أفاض الحديث">
+    <antipattern>
+        <token inflected="yes" skip="1">أَفَاضَ</token>
+        <token regexp="yes">&forms_fi;</token>
+    </antipattern>
+
+    <pattern>
+      <marker>
+        <token inflected="yes" postag="V.?[123];.*;.*-" postag_regexp="yes" skip="1">أَفَاضَ</token>
+     <!-- الفعل غير متصل بضمير -->
+      </marker>
+     
+    </pattern>
+    <message>الفعل أفاض متعد بحرف الجر في، وليس متعديا بنفسه. يفضل أن يقال:
+   <suggestion><match no="1"/>&nbsp;في</suggestion>
+</message> 
+    <example correction="أفاض في" type="incorrect"><marker>أفاض</marker> الحديث </example>
+    <example type="correct"> أفاض في الشرح </example>
+    <example type="correct"> أفاض  الأستاذ في الشرح </example>
+  </rule>
+<!-- trans_404_AfAD_AlHdyth أفَاضَ الحديثَ -->
+  <rule id="trans_404_AfAD_AlHdyth_2" name="أفاض الحديث">
+    <antipattern>
+        <token inflected="yes" skip="1">أَفَاضَ</token>
+        <token regexp="yes">&forms_fi;</token>
+    </antipattern>
+
+    <pattern>
+      <marker>
+        <token inflected="yes" postag="V.?[123];.*;.*H" postag_regexp="yes" skip="1">أَفَاضَ</token>
+      </marker>
+     <!-- الفعل متصل بضمير -->
+     
+    </pattern>
+    <message>الفعل أفاض متعد بحرف الجر في، وليس متعديا بنفسه. يفضل أن يقال:
+   <suggestion><match no="1"  regexp_match="(&verb_encletics;)$" regexp_replace=""/>&nbsp;في<match no="1"  regexp_match=".*(?=(&verb_encletics;)$)" regexp_replace=""/></suggestion>
+</message> 
+    <example correction="أفاض فيها" type="incorrect"><marker>أفاضها</marker> الحديث </example>
+    <example type="correct"> أفاض فيه الشرح </example>
+    <example type="correct"> أفاض  الأستاذ في الشرح </example>
+  </rule>

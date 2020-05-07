@@ -234,6 +234,12 @@ class rule_builder:
         if token != entity:
             line = u'   <token regexp="yes">%s</token>\n'%entity           
         
+        elif token == araby.BEH:
+            line = u'   <token postag="N.*;.*;-B.?" postag_regexp="yes"/>\n'                       
+            line = u'   <!--<token regexp="yes">&forms_bi;</token> -->\n'                       
+        elif token == araby.LAM:
+            line = u'   <token postag="N.*;.*;-L.?" postag_regexp="yes"/>\n'                       
+            line = u'   <!--<token regexp="yes">&forms_li;</token> -->\n'                       
         else:
             line = u"   <token %s>%s</token>\n"%(attributes,token)
         return line
