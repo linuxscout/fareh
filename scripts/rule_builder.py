@@ -59,13 +59,36 @@ class rule_builder:
         """ set the error rule category"""
         self.category_english = category
     
+    def get_marker_pos(self, marker_string):
+        """
+        extract positions from string
+        """
+        parts = marker_string.split("-")
+        positions = []
+        for part in parts:
+            try:
+                x = int(part) - 1
+            except ValueError:
+                x = 0
+            positions.append(x)
+        if len(positions) >= 2:
+            return positions[:2]
+        elif len(positions) == 1:
+            return positions*2
+        else:
+            return [0,0]
+            
+        
+            
     def add_pattern(self,pattern, mark_pos = "", inflected="",  regexp="", postag="", skip=""):
         """ add pattern """
         self.pattern = araby.tokenize(self.clean(pattern))
-        try:
-            self.mark_pos = int(mark_pos) - 1
-        except ValueError:
-            self.mark_pos = 0
+        # get marker pos as tuple
+        self.mark_pos = self.get_marker_pos(mark_pos)
+        #~ try:
+            #~ self.mark_pos = int(mark_pos) - 1
+        #~ except ValueError:
+            #~ self.mark_pos = 0
         self.inflected = inflected
         self.regexp = regexp
         self.postag = postag
@@ -92,12 +115,11 @@ class rule_builder:
     
     def add_example(self, example, correction=[],  mark_pos ="", correct=False):
         """ add pattern """
-        if mark_pos:
-            try:
-                self.example_marker_pos = int(mark_pos) - 1
-            except ValueError:
-                self.example_marker_pos = 0
+
+
         if not correct:
+            self.example_marker_pos = self.get_marker_pos(mark_pos)
+            #~ print("# markpos '%s'"%mark_pos)            
             self.examples['incorrect'].append(araby.strip_tashkeel(self.clean(example)))
         else:
             self.examples['correct'].append(self.clean(example))
@@ -190,12 +212,19 @@ class rule_builder:
                 for token in self.pattern[1:]:
                     token = araby.strip_tashkeel(token)
                     pattern += self.make_token(token)                
-        elif self.category in (u"فعل", u"متعدي بحرف",):
+        elif self.category in (u"فعل", u"متعدي بحرف", u"متعدي إلى مفعولين"):
             for i in range(len(tokens)):
-                if i == self.mark_pos :
-                    # one word is often wrong
-                    pattern += u"""<marker>%s</marker>"""%self.make_token(self.pattern[i], attributes)
-
+                # add marker 
+                if i >= self.mark_pos[0] and i <= self.mark_pos[1]:
+                    if i == self.mark_pos[0] :
+                        # one word is often wrong
+                        pattern += u"""<marker>"""
+                    pattern += self.make_token(self.pattern[i], attributes)
+                    if i == self.mark_pos[1] :
+                        # one word is often wrong
+                        pattern += u"""</marker>"""
+                    # add space
+                    pattern = " " + pattern
                 # treat extra tokens in a context
                 else:
                     token = self.pattern[i]
@@ -236,10 +265,10 @@ class rule_builder:
         
         elif token == araby.BEH:
             line = u'   <token postag="N.*;.*;-B.?" postag_regexp="yes"/>\n'                       
-            line = u'   <!--<token regexp="yes">&forms_bi;</token> -->\n'                       
+            line = u'   <!--<token regexp="yes">&forms_bih;</token> -->\n'                       
         elif token == araby.LAM:
             line = u'   <token postag="N.*;.*;-L.?" postag_regexp="yes"/>\n'                       
-            line = u'   <!--<token regexp="yes">&forms_li;</token> -->\n'                       
+            line = u'   <!--<token regexp="yes">&forms_lih;</token> -->\n'                       
         else:
             line = u"   <token %s>%s</token>\n"%(attributes,token)
         return line
@@ -275,7 +304,20 @@ class rule_builder:
                     suggest = sug_tokens[0]
                 else:
                     suggest = sug
-                suggestions += u"""   <suggestion><match no="1" regexp_match="%s" regexp_replace="%s"/></suggestion>\n"""%(match,suggest)            
+        elif self.category in ( u"متعدي بحرف", u"متعدي إلى مفعولين" ):
+            match  = self.pattern[0]
+
+            # add some suggestions     
+            suggestions += u"<!-- Verb Intransitive to transitive\n"
+            suggestions += u"""<suggestion><match no="1" postag="(V.*a.;..)(-)" postag_replace="$1H">%s</match><match no="2" regexp_match="ل" regexp_replace=""/></suggestion>"""%(match)
+            suggestions += u"\n-->\n"            
+            suggestions += u"<!-- Verb Intransitive to transitive, when the preposition letter is attached to a noun\n"
+            suggestions += u"""<suggestion><match no="1" postag="(V.*a.;..)(-)" postag_replace="$1H">%s</match>&nbsp;<match no="2" regexp_match="^ب" regexp_replace=""/></suggestion>"""%(match)
+            suggestions += u"\n-->\n"            
+            suggestions += u"<!-- Verb Transitive to intransitive\n"
+            suggestions += u"""  <suggestion><match no="1"  postag="(V-1.*)(.)" postag_replace="$1-" postag_regexp="yes">%s</match>&nbsp;في<match no="1"  regexp_match="(.*)((&verb_encletics;)$)|(.*)((&verb_encletics;)?$)" regexp_replace="$2"/></suggestion>"""%(match)
+            suggestions += u"\n-->\n"            
+            
         # make suggestion for verb category
         else:
             for sug in self.suggestions:
@@ -300,20 +342,24 @@ class rule_builder:
         corrections = u"|".join(self.suggestions)
         examples = ""
         #~ print('#********************%s'%self.example_marker_pos)
-        
+        #~ print(self.example_marker_pos)
         for exmp in self.examples["incorrect"]:
             ex_tokens = araby.tokenize(exmp)
-            try:
-                pat = ex_tokens[self.example_marker_pos]
-                exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)
-
-            except:
-                pat = "Example with problem"
-                exmp = "Example with problem" + exmp
-                #~ print(exmp, self.example_marker_pos)
-                #~ sys.exit()
-
-            examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp)
+            exmp_xml = ""
+            begin_tag = False
+            end_tag = False
+            for i in range(len(ex_tokens)):
+                if i == self.example_marker_pos[0]:
+                    exmp_xml  += u"<marker>"
+                    begin_tag = True
+                exmp_xml += ex_tokens[i]
+                if i == self.example_marker_pos[1]:
+                    exmp_xml  += u"</marker>"
+                    end_tag = True
+                exmp_xml +=" "
+            if begin_tag and not end_tag:
+                exmp_xml += u"</marker>"
+            examples +=u"<example correction='%s' type='incorrect'> %s </example>\n"%(corrections, exmp_xml)
             
         for exmp in self.examples["correct"]:
             #~ exmp = exmp.replace(pat, "<marker>%s</marker>"%pat)

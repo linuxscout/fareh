@@ -101,6 +101,7 @@ class rule_converter:
         category_table={
             "oneword":u"كلمة واحدة",
             "indirect-transitive":u"متعدي بحرف",
+            "double-transitive":u"متعدي إلى مفعولين",            
             "expression":u"تعبير",
             "jar":u"حرف جر",    
             "verb":u"فعل",

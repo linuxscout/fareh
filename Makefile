@@ -36,7 +36,9 @@ adj:CATEGORY=adjective
 expression:CATEGORY=expression
 verb:CATEGORY=verb
 trans:CATEGORY=indirect-transitive
+double:CATEGORY=double-transitive
+
 misc:CATEGORY=misc
-convert test oneword spell gender expression jar adj verb trans misc:ods
+convert test oneword spell gender expression jar adj verb trans double misc:ods
 	python3 $(SCRIPT)/grammar_csv2xml.py -t $(CATEGORY) -v $(VERSION) -f $(DATA_DIR_OUT)/$(RULES_CANDIDATES) > $(OUTPUT)/rules.tmp.xml
 	xmllint --format  $(OUTPUT)/rules.tmp.xml  --output $(OUTPUT)/rules-candidates.xml

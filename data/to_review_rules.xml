@@ -146,23 +146,6 @@
 
   </rule
 
-<!-- verb_268_kbdh_EnA2_shdydA كَبَّدَهُ عناءً شديداً -->
-  <rule id="verb_268_kbdh_EnA2_shdydA" name="كبده عناء شديدا">
-    <pattern>
-      <marker>
-        <token inflected="yes" skip="1">كَبَّدَ</token>
-      </marker>
-      <token inflected="yes" postag="N.*;--.?" postag_regexp="yes" regexp="yes">مجهود|خسارة|خسائر|عناء</token>
-    </pattern>
-    <message>(كبَّدَتِ الشمسُ السماءَ): صارت في وَسَطها 
-   <suggestion><match no="1" regexp_match="كبد" regexp_replace="حمّل"/></suggestion>
-   <suggestion><match no="1" regexp_match="كبد" regexp_replace="جشّم"/></suggestion>
-</message>
-    <example correction="حمّل|جشّم" type="incorrect"><marker>كبده</marker> عناء شديدا </example>
-    <example type="correct">  جَشَّمَهُ عناءً شديداً </example>
-    <example type="correct"> حَمَّلَهُ  عناءً شديداً </example>
-  </rule>
-
 
 
   <rule>
@@ -187,45 +170,128 @@
     <rulegroup id="transitive_verbs_direct_tobe_indirect" name="المتعدي  بنفسه تصحيحه متعد بحرف">
  <!-- TODO trans D2I-->
     </rulegroup>
-  <!-- trans_404_AfAD_AlHdyth أفَاضَ الحديثَ -->
-  <rule id="trans_404_AfAD_AlHdyth" name="أفاض الحديث">
-    <antipattern>
-        <token inflected="yes" skip="1">أَفَاضَ</token>
-        <token regexp="yes">&forms_fi;</token>
-    </antipattern>
 
+<rule id="ELUDED_TO" name="eluded to (alluded to)">
+    <pattern>
+       <token inflected="yes">بلاد</token>
+       <token>من</token>
+    </pattern>
+    <message>Did you mean <suggestion><match no="1" postag="N.*">بلد</match> من</suggestion>?</message>
+    <example correction="بلد من">He <marker>بلاد من</marker> engagement at the party.</example>
+    <example correction="البلد من">He <marker>البلاد من</marker> engagement at the party.</example>
+
+</rule>
+ <rule id="trans_422_tfAda" name="تفادى">
+   
     <pattern>
       <marker>
-        <token inflected="yes" postag="V.?[123];.*;.*-" postag_regexp="yes" skip="1">أَفَاضَ</token>
-     <!-- الفعل غير متصل بضمير -->
+        <token regexp="yes">drbtmoh|drbh|drb|drbth|drbt</token>
       </marker>
-     
     </pattern>
-    <message>الفعل أفاض متعد بحرف الجر في، وليس متعديا بنفسه. يفضل أن يقال:
-   <suggestion><match no="1"/>&nbsp;في</suggestion>
-</message> 
-    <example correction="أفاض في" type="incorrect"><marker>أفاض</marker> الحديث </example>
-    <example type="correct"> أفاض في الشرح </example>
-    <example type="correct"> أفاض  الأستاذ في الشرح </example>
-  </rule>
-<!-- trans_404_AfAD_AlHdyth أفَاضَ الحديثَ -->
-  <rule id="trans_404_AfAD_AlHdyth_2" name="أفاض الحديث">
-    <antipattern>
-        <token inflected="yes" skip="1">أَفَاضَ</token>
-        <token regexp="yes">&forms_fi;</token>
-    </antipattern>
+    <message> Did you mean 
+  <suggestion><match no="1"  regexp_match="(?:(tm))(o(h)$)|((h)$)" regexp_replace=""/> to</suggestion>
 
+</message>
+    <example correction="drb to" type="incorrect"><marker>drb</marker> thing</example>
+    <example correction="drbt to" type="incorrect"><marker>drbth</marker> thing</example>
+    <example correction="drbtm to" type="incorrect"><marker>drbtmoh</marker> thing</example>
+    
+  </rule>
+<!-- trans_422_tfAda تفادى -->
+  <rule id="test_regex" name="استعملتموه " default="off">
+    <pattern>
+        <token inflected="yes">اِسْتَخْدَمَ</token>
+    </pattern>
+
+    <message>Test: 
+  <suggestion><match no="1"  postag="(V.*)(H)" postag_replace="$1-" postag_regexp="yes">اِرْتَادَ</match>&nbsp;إليه</suggestion>
+</message>
+
+    <example correction="ارتدتم إليه" type="incorrect"><marker>استخدمتموه</marker> الشيء </example>
+    <example type="correct"> احتجتم إليه </example>
+  </rule>
+  <!-- trans_429_twsl توسَّل -->
+<!--
+  الفعل توسّل لازم لا يقبل مفعولا به في القاموس
+-->
+  <rule id="trans_429_twsl" name="توسل">
+   <antipattern>  
+<!-- الفعل غير متصل بضمير ومتبوع بحرف تعدي -->
+        <token inflected="yes" postag="V.*;.*;.*-" postag_regexp="yes" skip="1">تَوَسَّلَ</token>
+        <token postag="N.*B.?" postag_regexp="yes" skip="1"/>
+    </antipattern>
     <pattern>
       <marker>
-        <token inflected="yes" postag="V.?[123];.*;.*H" postag_regexp="yes" skip="1">أَفَاضَ</token>
+        <token inflected="yes">تَوَسَّلَ</token>
+        <token postag="N.*[^B]." postag_regexp="yes"/>
       </marker>
-     <!-- الفعل متصل بضمير -->
-     
     </pattern>
-    <message>الفعل أفاض متعد بحرف الجر في، وليس متعديا بنفسه. يفضل أن يقال:
-   <suggestion><match no="1"  regexp_match="(&verb_encletics;)$" regexp_replace=""/>&nbsp;في<match no="1"  regexp_match=".*(?=(&verb_encletics;)$)" regexp_replace=""/></suggestion>
-</message> 
-    <example correction="أفاض فيها" type="incorrect"><marker>أفاضها</marker> الحديث </example>
-    <example type="correct"> أفاض فيه الشرح </example>
-    <example type="correct"> أفاض  الأستاذ في الشرح </example>
+    <message>(توسَّل) لا يتعدى بنفسه, وإنما يتوصل إلى ما يستعين به بالباء 
+<suggestion><match no="1"  postag="(V.*)(-|H)" postag_replace="$1-" postag_regexp="yes">تَوَسَّلَ</match>&nbsp;<match no="2" postag="(N.*)([^B])(.)" postag_replace="$1B$3" postag_regexp="yes"/></suggestion>
+   <suggestion>ب</suggestion>
+</message>
+    <example correction="ب" type="incorrect"> لم تنفعه الحجج التي <marker>توسّلها لتبرئته</marker> </example>
+    <example type="correct"> توسّل بالرسول </example>
   </rule>
+<!--
+    <example correction="استأذنوه" type="incorrect"><marker>استأذنوا منه</marker></example>
+-->
+<!--
+   <suggestion><match no="1" postag="(V.*)(-)" postag_replace="$1H">اِسْتَأْذَنَ</match>+<match no="2" regexp_match="من" regexp_replace=""/></suggestion>-->
+
+
+ 
+
+  
+ 
+ <!-- trans_430_twTn_fy توطَّن في
+ الفعل توطّن غير موجود في القاموس
+  -->
+  <rule id="trans_430_twTn_fy" name="توطن في">
+    <pattern>
+      <marker>
+        <token inflected="yes" skip="1" postag="V5.*" postag_regexp="yes">تَوَطَّنَ</token>
+        <token regexp="yes">&forms_fi;</token>
+      </marker>
+    </pattern>
+    <message>(استوطن) و(توطَّن) فعلان متعديان 
+<!-- Verb Intransitive to transitive-->
+<suggestion><match no="1" postag="(V5.*a.;..)(-)" postag_replace="$1H">تَوَطَّنَ</match><match no="2" regexp_match="في" regexp_replace=""/></suggestion>
+</message>
+    <example correction="وتوطنها" type="incorrect"> حل خالد بحمص  <marker>وتوطن فيها</marker> </example>
+    <example type="correct"> توطّن المدينة </example>
+  </rule>
+ <!-- trans_431_HAz_Ela حَازَ على -->
+  <rule id="trans_431_HAz_Ela" name="حاز على">
+    <pattern>
+      <marker>
+        <token inflected="yes" skip="1" postag="VW1.*" postag_regexp="yes">حَازَ</token>
+        <token regexp="yes">&forms_3ala;</token>
+      </marker>
+    </pattern>
+    <message>يفضل أن يقال: 
+<!-- Verb Intransitive to transitive-->
+<suggestion><match no="1" postag="(VW1.*a.;..)(-)" postag_replace="$1H">حَازَ</match><match no="2" regexp_match="على|علي" regexp_replace=""/></suggestion>
+</message>
+    <example correction="حاز" type="incorrect"><marker>حاز على</marker> جوائز كثيرة  </example>
+    <example correction="حزتها" type="incorrect">جوائز كثيرة <marker>حزت عليها</marker></example>
+
+    <example type="correct"> حازت البنت الجوائر </example>
+
+  </rule>
+  <!-- verb_226_ttrAwH_AEmArhm_mn تَتَرَاوَحُ أعمارُهم من -->
+  <rule id="verb_226_ttrAwH_AEmArhm_mn" name="تتراوح أعمارهم من">
+    <pattern>
+      <marker>
+        <token postag="V5.*" postag_regexp="yes" inflected="yes">تَرَاوَحَ</token>
+        <token postag="N.*;--." postag_regexp="yes" regexp="yes">أعمار|عمر</token>
+        <token>من</token>
+      </marker>
+    </pattern>
+    <message>يفضل أن يقال: 
+   <suggestion><match no="1" postag="VW1.*">وَقَعَ</match>&nbsp;<match no="2"/>&nbsp;بين</suggestion>
+</message>
+    <example correction="تقع أعمارهم بين" type="incorrect"><marker>تتراوح أعمارهم من</marker> السابعة إلى العاشرة  </example>
+    <example type="correct"> تقع أعمارُهم بين السابعة والعاشرة </example>
+  </rule>
+  
