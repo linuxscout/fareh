@@ -74,7 +74,6 @@ class rule_converter:
             'regexp':14,#   تعبير منتظم
             'postag':15, #  وسم أقسام الكلم
             'skip':16, # تخطي كلمة
-
         }
         #give the display order for text format display
         self.display_order=[
@@ -110,6 +109,12 @@ class rule_converter:
             "spell":u"خطأ إملائي",
             "misc":u"منوع",
             "all":u"كل",
+            u"diac":u"شكل",
+            u"homophone":u"دارج",
+            u"added":u"مضاف",
+            u"word":u"كلمة",
+            u"homophone":u"متشابه",
+            u"darja":u"دارج",
         }
         counter_table={
             "oneword":0,
