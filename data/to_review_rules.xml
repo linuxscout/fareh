@@ -295,3 +295,111 @@
     <example type="correct"> تقع أعمارُهم بين السابعة والعاشرة </example>
   </rule>
   
+ <rule id="grammar_0010_jazem" name="حروف الشرط الجازمة">
+        <antipattern>
+            <token regexp="yes">لم|لما|إن|إنما|من|ما|مهما|متى|أي|أين|أيان|أنى|حيثما</token>
+            <token postag="VW.;.*f.0;---" postag_regexp="yes"/>
+        </antipattern>
+        <pattern>
+          <marker>
+            <token regexp="yes">لم|لما|إن|إنما|من|ما|مهما|متى|أي|أين|أيان|أنى|حيثما</token>
+            <token postag="VW.;.*f.[^0];---" postag_regexp="yes"/>
+          </marker>
+        </pattern>
+        <message>أتقصد؟
+الفعل المضارع بعد "لم" يأتي مجزوما.
+        
+        <suggestion><match no="1"/>&nbsp;<match no="2" postag="(VW.;.*f.).*" postag_replace="$10;---" postag_regexp="yes"/></suggestion>        
+        </message>
+        <example correction="لم يجر" type="incorrect"><marker>لم يجري</marker></example>
+      </rule>
+      
+      
+      <rule id="grammar_0010_jazem" name="حروف الشرط الجازمة">
+        <antipattern>
+            <token regexp="yes">لم|لما|إن|إنما|من|ما|مهما|متى|أي|أين|أيان|أنى|حيثما</token>
+            <token postag="VW.;.*f.0;---" postag_regexp="yes"/>
+        </antipattern>
+        <pattern>
+          <marker>
+            <token regexp="yes">لم|لما|إن|إنما|من|ما|مهما|متى|أي|أين|أيان|أنى|حيثما</token>
+            <token postag="VW.;.*f.[^0];---" postag_regexp="yes"/>
+          </marker>
+        </pattern>
+        <message>أتقصد؟
+الفعل المضارع بعد "لم" يأتي مجزوما.
+        
+        <suggestion><match no="1"/>&nbsp;<match no="2" postag="(VW.;.*f.).*" postag_replace="$10;---" postag_regexp="yes"/></suggestion>        
+        </message>
+        <example correction="لم يجر" type="incorrect"><marker>لم يجري</marker></example>
+      </rule>
+      <!-- grammar_0010_jazem_lam  حروف الجزم لام الأمر-->
+      <rule id="grammar_0010_jazem_lam" name="حروف الجزم لام">
+        <antipattern>
+            <token postag="VW.;.*f.0;-L-" postag_regexp="yes"/>
+        </antipattern>
+        <pattern>
+          <marker>
+            <token postag="VW.;.*f.[^0];-L-" postag_regexp="yes"/>
+          </marker>
+        </pattern>
+        <message>أتقصد؟
+الفعل المضارع بعد "لام الأمر" يأتي مجزوما. مثل "ليُنفقْ ذو سعة".
+        
+        <suggestion><match no="2" postag="(VW.;.*f.).*" postag_replace="$10;-L--" postag_regexp="yes"/></suggestion>        
+        </message>
+        <example correction="ليجر" type="incorrect"><marker>ليجري</marker></example>
+      </rule>
+      
+       <category id="GRAMMAR_ERROR" name="أخطاء نحوية" type="grammar">
+    <rulegroup id="Jar_majrour" name="جار ومجرور1">
+      <rule id="grammar_0000_jar" name="جار ومجرور 1">
+        <antipattern>
+          <token regexp="yes">&horof_jar;</token>
+          <token postag="N.*;.?2U.?;--.*|N.*;M[3]U.?;--.*" postag_regexp="yes"/>
+        </antipattern>
+        <pattern>
+          <token regexp="yes">&horof_jar;</token>
+          <marker>
+            <token postag="N.*;.?2U.?;--.*|N.*;M[3]U.?;--.*" postag_regexp="yes"/>
+          </marker>
+        </pattern>
+        <message>انتبه لحرف الجر فالمثنى يجر بالياء 
+        <suggestion><match no="2" regexp_match="(ان|ون)$" regexp_replace="ين"/></suggestion>
+        </message>
+        <example correction="الغابرين" type="incorrect"> عجوزا في <marker>الغابران</marker>.</example>
+        <example correction="الكتابين" type="incorrect"> نظرت في <marker>الكتابان</marker>.</example>
+        <example correction="صفحتين" type="incorrect"> نظرت في <marker>صفحتان</marker>.</example>
+        <example correction="مسافرين" type="incorrect"> هرولت إلى <marker>مسافرون</marker>.</example>
+        <example correction="المسافرين" type="incorrect"> عجوزا مع <marker>المسافرون</marker>.</example>
+      </rule>
+      
+          <rulegroup id="Jar_majrour" name="جار ومجرور1">
+      <rule id="grammar_0000_jar" name="جار ومجرور 1">
+        <antipattern>
+          <token regexp="yes">&horof_jar;</token>
+          <token postag="N..;.2[IB-].;--." postag_regexp="yes"/>
+        </antipattern>
+        <pattern>
+          <marker>
+          <token regexp="yes">&horof_jar;</token>
+          <token postag="N..;.2[^IB-].;--." postag_regexp="yes"/>
+          </marker>
+        </pattern>
+        <message>انتبه لحرف الجر فالمثنى يجر بالياء 
+        <suggestion><match no="1"/>&nbsp;<match no="2" postag="(N..;..)(.)(.;--.)"  postag_replace="$1I$3" postag_regexp="yes"/></suggestion>
+        </message>
+        <example correction="في الغابرين" type="incorrect"> عجوزا <marker>في الغابران</marker>.</example>
+        <example correction="في الكتابين" type="incorrect"> نظرت <marker>في الكتابان</marker>.</example>
+
+<!-- TODO, fix postag dictionary for masculine plural case -->
+
+<!--
+        <example correction="في صفحتين" type="incorrect"> نظرت <marker>في صفحتان</marker>.</example>
+        <example correction="في مسافرين" type="incorrect"> هرولت <marker>إلى مسافرون</marker>.</example>
+        <example correction="في المسافرين" type="incorrect"> عجوزا <marker>مع المسافرون</marker>.</example>-->
+      </rule>
+    </rulegroup>
+<!--
+    END RULEGROUP  Jar_Majrour
+-->

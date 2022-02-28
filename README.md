@@ -42,7 +42,7 @@ or in bibtex format
 ```
 ## Applications
 * Grammar checking
-* common error checking
+* Common error checking
 
 ## Features  مزايا
 <div dir=rtl>
@@ -72,11 +72,11 @@ or in bibtex format
 
 [المزيد عن الشيخ محمد فارح](doc/mohamed_fareh.md) 
 </div>
-  
+
 Usage
 =====
 1- Edit  rules file
-rules file  is edited in data directory as open document format.
+Rules file  is edited in data directory as open document format.
 
 2- Build candidate rules in xml format:
 
@@ -91,6 +91,13 @@ make test
 
 * data/	A list of rules files
 
+* data/done	A list of rules files already treated, it an be reviewed to fix some errors, or to avoid duplicated rules
+
+* data/original    original source files saved as archive
+
+* data/ArabicCommunErrors0.2.ods to add new rules as fields, or an other files with similar format
+
+  
 
 
 
