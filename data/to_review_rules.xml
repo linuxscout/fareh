@@ -244,41 +244,7 @@ USA
 
   
  
- <!-- trans_430_twTn_fy توطَّن في
- الفعل توطّن غير موجود في القاموس
-  -->
-  <rule id="trans_430_twTn_fy" name="توطن في">
-    <pattern>
-      <marker>
-        <token inflected="yes" skip="1" postag="V5.*" postag_regexp="yes">تَوَطَّنَ</token>
-        <token regexp="yes">&forms_fi;</token>
-      </marker>
-    </pattern>
-    <message>(استوطن) و(توطَّن) فعلان متعديان 
-<!-- Verb Intransitive to transitive-->
-<suggestion><match no="1" postag="(V5.*a.;..)(-)" postag_replace="$1H">تَوَطَّنَ</match><match no="2" regexp_match="في" regexp_replace=""/></suggestion>
-</message>
-    <example correction="وتوطنها" type="incorrect"> حل خالد بحمص  <marker>وتوطن فيها</marker> </example>
-    <example type="correct"> توطّن المدينة </example>
-  </rule>
- <!-- trans_431_HAz_Ela حَازَ على -->
-  <rule id="trans_431_HAz_Ela" name="حاز على">
-    <pattern>
-      <marker>
-        <token inflected="yes" skip="1" postag="VW1.*" postag_regexp="yes">حَازَ</token>
-        <token regexp="yes">&forms_3ala;</token>
-      </marker>
-    </pattern>
-    <message>يفضل أن يقال: 
-<!-- Verb Intransitive to transitive-->
-<suggestion><match no="1" postag="(VW1.*a.;..)(-)" postag_replace="$1H">حَازَ</match><match no="2" regexp_match="على|علي" regexp_replace=""/></suggestion>
-</message>
-    <example correction="حاز" type="incorrect"><marker>حاز على</marker> جوائز كثيرة  </example>
-    <example correction="حزتها" type="incorrect">جوائز كثيرة <marker>حزت عليها</marker></example>
-
-    <example type="correct"> حازت البنت الجوائر </example>
-
-  </rule>
+ 
   <!-- verb_226_ttrAwH_AEmArhm_mn تَتَرَاوَحُ أعمارُهم من -->
   <rule id="verb_226_ttrAwH_AEmArhm_mn" name="تتراوح أعمارهم من">
     <pattern>
@@ -374,4 +340,23 @@ USA
         </message>
         <example correction="لبنًا" type="incorrect">شرب الطفل <marker>لبنا</marker></example>
       </rule> 
+      
+       <!-- trans_438_Akhbara_bAn أخبر بأن
+      الفعل أخبر مشكول شكلا خاطئا في قاعدة بيانات الراموز بفتحة على الخاء
+      
+      -->
+  <rule id="trans_438_Akhbara_bAn" name="أَخْبَرَ بأن">
+    <pattern> 
+    <marker>
+      <token inflected="yes" skip="1">أَخْبَرَ</token>
+
+        <token regexp="yes">ب(&forms_anna;)</token>
+      </marker>
+    </pattern>
+    <message>يفضل أن يقال:
+   <suggestion><match no="1"/>&nbsp;<match no="2" regexp_match="^ب" regexp_replace=""/></suggestion>
+</message>
+    <example correction="اخبر أنه" type="incorrect"><marker>أخبر بأنه</marker> مريض </example>
+    <example type="correct"> أخبرت أنه مريض </example>
+  </rule>
 </rules>
