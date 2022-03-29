@@ -1,30 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../../../../../../../../../languagetool-core/src/main/resources/org/languagetool/rules/print.xsl" ?>
+<?xml-stylesheet type="text/css" href="../../../../../../../../../languagetool-core/src/main/resources/org/languagetool/rules/rules.css"
+        title="Easy editing stylesheet" ?>
+<!--
+Arabic Grammar and Typo Rules for LanguageTool
+See arabic_tags for the meaning of the POS tags
+Copyright (C) 2019 Taha Zerrouki (http://www.tahadz.com),
+                   Sohaib Afifi (http://sohaibafifi.com)
+                   and the LanguageTool contributors
 
-<rule id="watan2" name="تجربة">
-<pattern>
-    <token inflected="yes">بلاد</token>
-</pattern>
-<message>Here's another word: 
-  <suggestion><match no="1" regexp_match="بلاد" regexp_replace="وطن"/></suggestion>
- </message>
- <example correction="بوطنكما" type="incorrect"> <marker>ببلادكما</marker> </example>
- <example type="correct"> بوطنكما </example>
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
 
-</rule>
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
 
-<rule id="watan1" name="تجربة الوسم">
-<pattern>
-    <token inflected="yes">بلاد</token>
-</pattern>
-<message>Here's another word: 
-    <suggestion>
-        <match no="1" postag="N.*" postag_regexp="yes">أرض</match>
-    </suggestion>
-</message>
- <example correction="بالأرض" type="incorrect"> <marker>بالبلاد</marker> </example>
- <example type="correct"> بأرضكما </example>
-</rule>
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
+USA
+-->
 
+  <!DOCTYPE rules [
+    <!ENTITY apostrophe "['’`´‘]">
+    <!ENTITY nbsp " ">
+     <!ENTITY tanwin_fathatan "&#x064b;">
+    <!ENTITY horof_jar "في|من|إلى|على|عن|مع">
+    <!ENTITY unbreak_proclitics "ال">
+    <!ENTITY proclitics "و|ف|ال|وال|فال|ب|بال|وبال|ك|كال|وكال|فكال|ل|لل|ولل|فلل">
+    <!ENTITY undef_proclitics "و|ف|ب|ك|وب|فب|وك|فك">
+    <!ENTITY verb_prefixes "ي|ت|ن|أ|سي|ست|سن|سأ">
+    <!ENTITY verb6_prefixes "ا|ي|ت|ن|أ|سي|ست|سن|سأ">
+    <!ENTITY conj "و|ف">
+    <!ENTITY prep "ب|ك|ل">
+    <!ENTITY enclitics "|ه|ها|هما|هم|هن|ك|كما|كم|كن|ي|نا">
+    <!ENTITY verb_enclitics "ه|ها|هما|هم|هن|ك|كما|كم|كن|ني|نا">
+    <!ENTITY forms_3an "عن|عني|عنا|عنك|عنكما|عنكم|عنكن|عنه|عنها|عنهما|عنهم|عنهن">
+    <!ENTITY forms_3anh "عني|عنا|عنك|عنكما|عنكم|عنكن|عنه|عنها|عنهما|عنهم|عنهن">
+    <!ENTITY forms_ila "إلى|إلي|إلينا|إليك|إليكما|إليكم|إليكن|إليه|إليها|إليهما|إليهم|إليهن">
+    <!ENTITY forms_ilayh "إلي|إلينا|إليك|إليكما|إليكم|إليكن|إليه|إليها|إليهما|إليهم|إليهن">
+    <!ENTITY forms_3ala "على|علي|علينا|عليك|عليكما|عليكم|عليكن|عليه|عليها|عليهما|عليهم|عليهن">
+    <!ENTITY forms_3alayh "علينا|عليك|عليكما|عليكم|عليكن|عليه|عليها|عليهما|عليهم|عليهن">
+    <!ENTITY forms_fi "في|فينا|فيك|فيكما|فيكم|فيكن|فيه|فيها|فيهما|فيهم|فيهن">
+    <!ENTITY forms_fih "فينا|فيك|فيكما|فيكم|فيكن|فيه|فيها|فيهما|فيهم|فيهن">
+    <!ENTITY forms_hawla "حول|حولنا|حولك|حولكما|حولكم|حولكن|حوله|حولها|حولهما|حولهم|حولهن">
+    <!ENTITY forms_hawlah "حولنا|حولك|حولكما|حولكم|حولكن|حوله|حولها|حولهما|حولهم|حولهن">
+    <!ENTITY forms_min "مني|من|مننا|منك|منكما|منكم|منكن|منه|منها|منهما|منهم|منهن">
+    <!ENTITY forms_minh "مني|مننا|منك|منكما|منكم|منكن|منه|منها|منهما|منهم|منهن">
+    <!ENTITY forms_ma3a "مع|معنا|معك|معكما|معكم|معكن|معه|معها|معهما|معهم|معهن">
+    <!ENTITY forms_ma3ah "معنا|معك|معكما|معكم|معكن|معه|معها|معهما|معهم|معهن">
+    <!ENTITY forms_bih "بي|بنا|بك|بكما|بكم|بكن|به|بها|بهما|بهم|بهن">
+    <!ENTITY forms_lih "لي|لنا|لك|لكما|لكم|لكن|له|لها|لهما|لهم|لهن">
+    <!ENTITY forms_anna "أني|أننا|أنك|أنكما|أنكم|أنكن|أنه|أنها|أنهما|أنهم|أنهن">
+    <!ENTITY forms_inna "إني|إننا|إنك|إنكما|إنكم|إنكن|إنه|إنها|إنهما|إنهم|إنهن">
+    <!ENTITY forms_3inda "عند|عندنا|عندك|عندكما|عندكم|عندكن|عنده|عندها|عندهما|عندهم|عندهن">
+    <!ENTITY forms_3indah "عندنا|عندك|عندكما|عندكم|عندكن|عنده|عندها|عندهما|عندهم|عندهن">
+    <!ENTITY forms_dhidda "ضد|ضدنا|ضدك|ضدكما|ضدكم|ضدكن|ضده|ضدها|ضدهما|ضدهم|ضدهن">
+    <!ENTITY forms_dhiddah "ضدنا|ضدك|ضدكما|ضدكم|ضدكن|ضده|ضدها|ضدهما|ضدهم|ضدهن">
+    <!ENTITY allah_names "الآخر|الحميد|الحفيظ|اللطيف|المحيي|الجامع|الباطن|الولي|المقسط|الغفار|الودود|الوهاب|المانع|الشكور|الحليم|المتكبر|الحسيب|الجليل|النافع|الصبور|النور|المصور|الفتاح|مالك|الحي|الغني|الحق|الواسع|الجبار|المغني|العظيم|الباقي|الوارث|الرزاق|المهيمن|الضار|المقيت|الهادي|المتعالي|الوالي|المقتدر|المعز|الأول|القادر|الصمد|السميع|المذل|الكريم|ذو|البصير|العلي|السلام|المميت|العدل|الرافع|التواب|القهار|القابض|المعيد|المبدئ|الرشيد|المؤخر|المؤمن|الجلال|الظاهر|القيوم|الخبير|الوكيل|العزيز|الرحيم|الواجد|البر|المقدم|البديع|الغفور|الرقيب|الأحد|القدوس|الباسط|الجميل|والإكرام|المجيد|الرحمن|الرؤوف|المجيب|القوي|الخالق|الواحد|المنتقم|الملك|المعطي|المحصي|الكبير|العفو|المتين|الباعث|الماجد|الخافض|الحكم|العليم|البارئ|الشهي">
+    <!ENTITY wrong_feminine "ذقن|رفات">
+    <!ENTITY wrong_masculine "كتف|فخذ|ساق|ريح|بئر|يمين|ضبع|سن">
+    <!ENTITY neutral_gender "بعض|من">
+    <!ENTITY months_solar_syriac "كانون الثاني|شباط|آذار|نيسان|أيار|حزيران|تموز|آب|أيلول|تشرين الأول|تشرين الثاني|كانون الأول">
+    <!ENTITY months_solar_french "جانفي|فيفري|مارس|أفريل|ماي|جوان|جويلية|أوت|سبتمبر|أكتوبر|نوفمبر|ديسمبر">
+   <!ENTITY months_solar_english "يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر">
+    <!ENTITY months_solar_english_french "يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|جانفي|فيفري|أفريل|ماي|جوان|جويلية|أوت|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر">
+   <!ENTITY months_solar "&months_solar_syriac;|&months_solar_english_french;">
+    <!ENTITY seasons_years "صيف|ربيع|شتاء|خريف">
+    <!ENTITY week_days "السبت|الأحد|الإثنين|الاثنين|الثلاثاء|الأربعاء|الخميس|الجمعة|سبت|أحد|اثنين|ثلاثاء|أربعاء|خميس|جمعة">
+    ]>
 
+<rules>
 
 
 
@@ -80,14 +130,6 @@
 
   </rule>
 
-<rule id="ELUDED_TO" name="eluded to (alluded to)">
-    <pattern>
-       <token inflected="yes">ضَرَبَ</token>
-    </pattern>
-    <message>Did you mean <suggestion><match no="1" postag="V.*" postag_regexp="yes">سحب</match></suggestion>?</message>
-    <example correction="سحب">He <marker>ضرب</marker> engagement at the party.</example>
-<example correction="يسحب">He <marker>يضرب</marker> engagement at the party.</example>
-</rule>
 
 <!-- verb_253_srE_Eml سَرَّعَ العملَ -->
   <rule id="verb_253_srE_Eml" name="سرع عمل">
@@ -144,59 +186,17 @@
 
     <example type="correct"> أَغْلَيْتُ الماءَ، فهو مُغْلًى </example>
 
-  </rule
-
-
-
-  <rule>
-    <pattern>
-      <marker>
-        <token inflected="yes" skip="1">verb1</token>
-        <token postag="N.*" postag_regexp="yes" min="0"/> 
-        <token>on</token>
-     </marker>
-    </pattern>
-    <message>Did you means 
-   <suggestion><match no="1" regexp_match="verb1" regexp_replace="verb2"/>&nbsp;<match no="2"/></suggestion>
-</message>
-    <example correction="verb2 subject" type="incorrect"><marker>verb1 subject on </marker></example>
-    <example correction="verb2" type="incorrect"><marker>verb1 on </marker> </example>
-
-    <example type="correct"> verb2 subject </example>
   </rule>
 
 
 
-    <rulegroup id="transitive_verbs_direct_tobe_indirect" name="المتعدي  بنفسه تصحيحه متعد بحرف">
- <!-- TODO trans D2I-->
-    </rulegroup>
 
-<rule id="ELUDED_TO" name="eluded to (alluded to)">
-    <pattern>
-       <token inflected="yes">بلاد</token>
-       <token>من</token>
-    </pattern>
-    <message>Did you mean <suggestion><match no="1" postag="N.*">بلد</match> من</suggestion>?</message>
-    <example correction="بلد من">He <marker>بلاد من</marker> engagement at the party.</example>
-    <example correction="البلد من">He <marker>البلاد من</marker> engagement at the party.</example>
 
-</rule>
- <rule id="trans_422_tfAda" name="تفادى">
-   
-    <pattern>
-      <marker>
-        <token regexp="yes">drbtmoh|drbh|drb|drbth|drbt</token>
-      </marker>
-    </pattern>
-    <message> Did you mean 
-  <suggestion><match no="1"  regexp_match="(?:(tm))(o(h)$)|((h)$)" regexp_replace=""/> to</suggestion>
 
-</message>
-    <example correction="drb to" type="incorrect"><marker>drb</marker> thing</example>
-    <example correction="drbt to" type="incorrect"><marker>drbth</marker> thing</example>
-    <example correction="drbtm to" type="incorrect"><marker>drbtmoh</marker> thing</example>
-    
-  </rule>
+
+
+
+
 <!-- trans_422_tfAda تفادى -->
   <rule id="test_regex" name="استعملتموه " default="off">
     <pattern>
@@ -351,55 +351,27 @@
         <example correction="ليجر" type="incorrect"><marker>ليجري</marker></example>
       </rule>
       
-       <category id="GRAMMAR_ERROR" name="أخطاء نحوية" type="grammar">
-    <rulegroup id="Jar_majrour" name="جار ومجرور1">
-      <rule id="grammar_0000_jar" name="جار ومجرور 1">
-        <antipattern>
-          <token regexp="yes">&horof_jar;</token>
-          <token postag="N.*;.?2U.?;--.*|N.*;M[3]U.?;--.*" postag_regexp="yes"/>
-        </antipattern>
-        <pattern>
-          <token regexp="yes">&horof_jar;</token>
-          <marker>
-            <token postag="N.*;.?2U.?;--.*|N.*;M[3]U.?;--.*" postag_regexp="yes"/>
-          </marker>
-        </pattern>
-        <message>انتبه لحرف الجر فالمثنى يجر بالياء 
-        <suggestion><match no="2" regexp_match="(ان|ون)$" regexp_replace="ين"/></suggestion>
-        </message>
-        <example correction="الغابرين" type="incorrect"> عجوزا في <marker>الغابران</marker>.</example>
-        <example correction="الكتابين" type="incorrect"> نظرت في <marker>الكتابان</marker>.</example>
-        <example correction="صفحتين" type="incorrect"> نظرت في <marker>صفحتان</marker>.</example>
-        <example correction="مسافرين" type="incorrect"> هرولت إلى <marker>مسافرون</marker>.</example>
-        <example correction="المسافرين" type="incorrect"> عجوزا مع <marker>المسافرون</marker>.</example>
-      </rule>
       
-          <rulegroup id="Jar_majrour" name="جار ومجرور1">
-      <rule id="grammar_0000_jar" name="جار ومجرور 1">
-        <antipattern>
-          <token regexp="yes">&horof_jar;</token>
-          <token postag="N..;.2[IB-].;--." postag_regexp="yes"/>
+     <!--  مشكلة: تلبتس مع اشياء كثيرة
+     مع الفعل مع المثنى ف
+     ضربا
+     المثنى
+     
+     -      حلة الاسم الجامد المنوّن، منته بألف
+   
+      ما عدا: ما لا ينتهي بألف أو ألف وتنوين-->
+      <rule id="typo_000_tanwin_nasb2" name="تنوين النصب">
+         <antipattern> 
+        <token regexp="yes">ا(&tanwin_fathatan;)$|(&tanwin_fathatan;)ا$</token>
         </antipattern>
         <pattern>
           <marker>
-          <token regexp="yes">&horof_jar;</token>
-          <token postag="N..;.2[^IB-].;--." postag_regexp="yes"/>
+              <token postag="N.*;M1[A].?;.?--" postag_regexp="yes"><exception regexp="yes">[^&alef;]$</exception></token>
           </marker>
         </pattern>
-        <message>انتبه لحرف الجر فالمثنى يجر بالياء 
-        <suggestion><match no="1"/>&nbsp;<match no="2" postag="(N..;..)(.)(.;--.)"  postag_replace="$1I$3" postag_regexp="yes"/></suggestion>
+        <message>لأنه من الأخطاء الشائعة كتابة التنوين على الألف، والصحيح أن تُكتب على الحرف الذي قبل الألف؛ لأن التنوين نون ساكنة والألف ساكنة، فلا يجتمع ساكنان
+: <suggestion><match no="1" regexp_match="ا$" regexp_replace="&tanwin_fathatan;ا"/></suggestion>
         </message>
-        <example correction="في الغابرين" type="incorrect"> عجوزا <marker>في الغابران</marker>.</example>
-        <example correction="في الكتابين" type="incorrect"> نظرت <marker>في الكتابان</marker>.</example>
-
-<!-- TODO, fix postag dictionary for masculine plural case -->
-
-<!--
-        <example correction="في صفحتين" type="incorrect"> نظرت <marker>في صفحتان</marker>.</example>
-        <example correction="في مسافرين" type="incorrect"> هرولت <marker>إلى مسافرون</marker>.</example>
-        <example correction="في المسافرين" type="incorrect"> عجوزا <marker>مع المسافرون</marker>.</example>-->
-      </rule>
-    </rulegroup>
-<!--
-    END RULEGROUP  Jar_Majrour
--->
+        <example correction="لبنًا" type="incorrect">شرب الطفل <marker>لبنا</marker></example>
+      </rule> 
+</rules>
