@@ -359,4 +359,233 @@ USA
     <example correction="اخبر أنه" type="incorrect"><marker>أخبر بأنه</marker> مريض </example>
     <example type="correct"> أخبرت أنه مريض </example>
   </rule>
-</rules>
+
+   <rule id="syntax_206_ikhtar_2" name="اختيار بين">
+          <!--  النمط	الفعل اختار لا يأتي مع بين
+المقترح	
+             الشرح	إذ استعمال "بين" مع الاختيار غير معروف 
+
+خطأ	          اختر بين هذين الأمرين
+صواب		اختر أحد الأمرين 
+             حالة اختيارهم لم أدرجها
+org.languagetool.rules.patterns.PatternRuleTest$PatternRuleTestFailure: Test failure for rule syntax_206_ikhtar_2[2] in file /org/languagetool/rules/ar/grammar.xml: Incorrect suggestions: Expected 'اختيار أحد|اختيار إحدى', got: 'اختيار أحد|اختياري أحد|اختيار إحدى|اختياري إحدى' on input: 'الاختيار بين هذين الأمرين '
+
+       org.languagetool.rules.patterns.PatternRuleTest$PatternRuleTestFailure: Test failure for rule syntax_206_ikhtar_2[2] in file /org/languagetool/rules/ar/grammar.xml: Incorrect suggestions: Expected 'باختيار أحد|باختيار إحدى', got: '(بالاختيار) أحد|(بالاختيار) إحدى' on input: 'عليك بالاختيار بين هذين الأمرين '
+
+-->
+        <pattern>
+                <marker>
+                <token inflected="yes" postag="NM-;M1.*;..[L-n]" postag_regexp="yes" >اختيار</token>
+            <token postag="NJ-;.*;--." postag_regexp="yes" inflected="yes">بين</token>
+          </marker>
+        </pattern>
+        <message>لا تستعمل "بين " مع الاختيار، هذا غير معروف"
+ <suggestion><match no="1"  postag="(NM-;M1.*)([L-n])$" postag_replace="$1-"  postag_regexp="yes"/>&nbsp;أحد</suggestion>
+ <suggestion><match no="1"  postag="(NM-;M1.*)([L-n])$" postag_replace="$1-"  postag_regexp="yes"/>&nbsp;إحدى</suggestion>
+
+        </message>
+            <example correction="اختيار أحد|اختيار إحدى" type="incorrect"><marker>الاختيار بين</marker> هذين الأمرين </example>
+             <example correction="باختيار أحد|باختيار إحدى" type="incorrect">عليك <marker>بالاختيار بين</marker> هذين الأمرين </example> 
+             <example correction="اختيار أحد|اختيار إحدى" type="incorrect">كان <marker>اختيارا بين</marker> هذين الأمرين </example> 
+            <example> عليك اختيار أحد هذين الشيئين </example>
+      </rule>
+      
+      
+                 <rule id="syntax_1528_byna_wa_bayna_3" name="بينك وبينه">
+          <!--     لا داعي لتكرار "بين" لأن التكرار لا يعطي معنى جديدًا	
+               الخطأ: جلس بين محمد وبين علي
+               الصواب: جلس بين محمد وعلي
+الحالة الأولى: بين فلان وفلان
+               الحالة الثانية: بينه وبين فلان
+               الثالثة: بين فلان وبينه (كل الضمائر)
+              *** الحالات المدعومة هنا : بين+ضمير وبين+ضمير، لصعوبة توليد المقترحات لكل حالة، لذا ستمثل في ملف replaces.txt
+               بينه وبينها => بينهما
+               بينك وبينها => بينكما
+               بيننا وبينهم => بيننا
+               
+
+-->
+        <pattern>
+                   <marker>  
+                       <token regexp="yes">بينك|بينكما|بينكم</token>
+                       <token regexp="yes">وبين(ك|ه|ها|هما|هم|هن|كما|كم|كن)</token>
+          </marker>
+        </pattern>
+        <message>لا داعي لتكرار "بين" لأن تكرارها لا يعطي معنى جديدًا	
+            
+: <suggestion>بيننا</suggestion>
+
+        </message>
+            <example correction="بينكم"  type="incorrect">جلس  <marker>بينك وبينه</marker> علي </example>
+            <example correction="بينكم"  type="incorrect">حال  <marker>بينكما وبينهما</marker> علي</example>
+            <example >جلس بينكم</example>
+      </rule>
+      
+      
+            <!--       حالة الفترات التي بها تنوين  عدد   مثل لثلاثة أيام => ثلاث أيام، لثلاث أسابيع =>  ثلاث أسابيع    -->
+      <!--  <rule id="syntax_1492_L_modda_3" name="لمدة">
+        <pattern> <marker>
+             <token postag="V.*" postag_regexp="yes" skip="2"/>
+             <token regexp="yes">ل(ثلاث|لأربع|||||)</token>
+             <token regexp="yes">ل(&periods_need_tanwin_nasb;)</token>
+          </marker>
+        </pattern>
+        <message>
+            التعبير بالظرفية "ساعتين، ثلاث ساعات" هو المراد، وليس بالجار والمجرور"
+اللام تحذف فلا ضرورة لها، قبل الظرف
+            : <suggestion><match no="1"  include_skipped="all"/>&nbsp;<match no="2" regexp_match="^ل(.*)$" regexp_replace="$1&tanwin_fathatan;&alef;"/></suggestion>
+
+        </message>
+            <example correction="عملت يومًا"  type="incorrect"> <marker>عملت ليوم</marker> </example>
+            <example correction="عملت الطالبة أسبوعًا"  type="incorrect"> <marker>عملت الطالبة لأسبوع</marker> </example>
+            <example correction="عملت الطالبة أعوامًا"  type="incorrect"> <marker>عملت الطالبة لأعوام</marker> طويلة</example>
+            <example >يجتهد أعواما طويلة</example>
+            <example >يجتهد أسبوعا </example>
+      </rule>-->
+      
+      
+          <rule id="syntax_275_mobtada_mansoub_sent_start" name="مبتدأ منصوب">
+          <!--  النمط	مبتدأ في أول الكلام منصوب
+المقترح	الرفع
+الشرح	المبتدأ لا يكون منصوبا في بداية الكلام
+خطأ	            الفلاحين مشغولون, بناءك جاهز  
+صواب	الفلاحون مشغولون, بناؤك جاهز
+
+-->
+        <antipattern>
+                    <token postag="SENT_START"/> 
+                    <token postag="N.*;..[U-].;- -." postag_regexp="yes"/>
+        </antipattern>
+        <pattern>
+                   
+                       <token postag="SENT_START"/> <marker> 
+                       <token postag="N.*;..[AI].;--." postag_regexp="yes"/>
+          </marker>
+        </pattern>
+        <message>المبتدأ لا يكون منصوبا في بداية الكلام"
+            : <suggestion><match no="2" postag="(N.*;..)([AI])(.*)" postag_replace="$1U$3"  postag_regexp="yes"/></suggestion>
+
+        </message>
+            <example correction="العاملان|العاملون" type="incorrect"><marker>العاملين</marker> مشغولون </example>
+            <example>بناؤك جاهز </example>
+            <example>الفلاحون نشطون </example>
+      </rule>
+      
+      
+                       <rule id="syntax_numeric_0003" name="تدقيق ألفاظ الأعداد">
+<!--       /*
+   
+           -->
+                <antipattern>
+                    <token>في</token>
+                    <token postag="NN.;..[-I].;.*" postag_regexp="yes" min="1" max="10"/>
+                </antipattern>
+                <pattern>
+                    <marker>
+                    <token>في</token>
+                    <token postag="NN.*;..[^U].;.*" postag_regexp="yes" min="0" max="10"/>
+                    <token postag="NN.*;..U.;.*" postag_regexp="yes"/>
+                </marker>
+                 <token postag="NN.*" postag_regexp="yes" negate_pos="yes"/> 
+
+                </pattern>
+                <filter class="org.languagetool.rules.ar.NumberPhraseFilter" args="previous:\1 previousPos:1"/>
+                <message>التحقق من الأعداد
+                    </message>
+                 <example type="incorrect" correction="في ألف وخمسمائة وثلاثة وثلاثين"><marker>في ألف وخمسمئة وثلاثة وثلاثون</marker> مسجد.</example>   
+<!--                  <example type="incorrect" correction="في مليونين ومئتين وخمسة وأربعين ألفا وسبعمائة وواحد"><marker>في مليونان ومئتان وخمسة وأربعون ألفاً وسبعمائة وواحد</marker>.</example>    -->
+
+            </rule>
+            
+                    <rule id="syntax_numeric_0002" name="تدقيق ألفاظ الأعداد">
+<!--       /*
+   
+           -->
+                <antipattern>
+                    <token>في</token>
+                    <token postag="NN.;..[-I].;.*" postag_regexp="yes" min="1" max="10"/>
+                </antipattern>
+                <pattern>
+                    <marker>
+                    <token>في</token>
+                    <token postag="NN.*;..[^U].;.*" postag_regexp="yes" min="0" max="10"/>
+                    <token postag="NN.*;..U.;.*" postag_regexp="yes"/>
+                    <token postag="NN.*" postag_regexp="yes" min="0" max="5"/>
+                </marker>
+<!--                <token postag="NN.*" postag_regexp="yes" negate_pos="yes"/> -->
+                </pattern>
+                <filter class="org.languagetool.rules.ar.NumberPhraseFilter" args="previous:\1 previousPos:1 nextPos:0"/>
+                <message>التحقق من الأعداد
+                    </message>
+                 <example type="incorrect" correction="في ألف وخمسمائة واثنين وثلاثين"><marker>في ألف وخمسمئة واثنان وثلاثون</marker> صندوقا.</example>   
+                 <example type="incorrect" correction="في مليونين ومئتين وخمسة وأربعين ألفا وسبعمائة وواحد"><marker>في مليونان ومئتان وخمسة وأربعون ألفاً وسبعمائة وواحد</marker>.</example>   
+
+            </rule>
+            
+            
+ <rule id="syntax_numeric_0001-3" name="تدقيق ألفاظ الأعداد">
+               <antipattern>
+                    <token>في</token>
+                    <token postag="NN.;..[^U].;.*" postag_regexp="yes" min="1" max="3"/>
+                    <token postag="NJ.*" postag_regexp="yes"/>
+                </antipattern>
+                <pattern>
+                    <marker>
+                    <token>في</token>
+                    <token postag="NN.*;.*;.*" postag_regexp="yes" min="1" max="3"/>
+                </marker>
+               <token postag="NJ.*" postag_regexp="yes"/>
+                </pattern>
+                <filter class="org.languagetool.rules.ar.NumberPhraseFilter" args="previous:\1 previousPos:1 nextPos:-1"/>
+                <message>التحقق من الأعداد
+                    </message>
+<!--                  <example type="incorrect" correction="في ثلاثين"><marker>في ثلاثون</marker> صندوقا.</example>    -->
+<!--                  <example type="incorrect" correction="في اثنين وثلاثين"><marker>في اثنان وثلاثون</marker> صندوقا.</example>    -->
+<!--                  <example type="incorrect" correction="في خمسة وثلاثين"><marker>في خمسة وثلاثون</marker> صندوقا.</example>    -->
+                 <example type="incorrect" correction="في خمسمائة واثنين وثلاثين"><marker>في خمسمئة واثنان وثلاثون</marker> صندوقا.</example>   
+
+
+            </rule>
+ <rule id="syntax_numeric_0002" name="تدقيق ألفاظ الأعداد">
+               <antipattern>
+                    <token>في</token>
+                    <token postag="NN.;..[^U].;.*" postag_regexp="yes" min="1" max="3"/>
+                    <token postag="NN.;..[^U].;.*" postag_regexp="yes"/>
+                   <token postag="NJ.*" postag_regexp="yes"/>
+                </antipattern>
+                <pattern>
+                    <marker>
+                    <token>في</token>
+                    <token postag="NN.*;.*;.*" postag_regexp="yes" min="1" max="3"/>
+                    <token postag="NN.*;.*;.*" postag_regexp="yes"/>
+                </marker>
+               <token postag="NJ.*" postag_regexp="yes"/>
+                </pattern>
+                <filter class="org.languagetool.rules.ar.NumberPhraseFilter" args="previous:\1 previousPos:1 nextPos:-1"/>
+                <message>التحقق من الأعداد
+                    </message>
+                <example type="incorrect" correction="في خمسة وثلاثين"><marker>في خمسة وثلاثون</marker> صندوقا.</example>   
+                 <example type="incorrect" correction="في خمسمائة واثنين وثلاثين"><marker>في خمسمئة واثنان وثلاثون</marker> صندوقا.</example>   
+                 <example type="incorrect" correction="في ألف وخمسمائة واثنين وثلاثين"><marker>في ألف وخمسمئة واثنين وثلاثون</marker> صندوقا.</example>   
+                 <example type="incorrect" correction="في ألف وخمسمائة واثنين وثلاثين"><marker>في ألف وخمسمئة واثنان وثلاثون</marker> صندوقا.</example>   
+            </rule>
+ <rule id="syntax_numeric_0003" name="تدقيق ألفاظ الأعداد">
+                <pattern>
+                    <marker>
+                    <token>في</token>
+                    <token postag="NN.*;.*;.*" postag_regexp="yes" min="0" max="3"/>
+                    <token postag="NN.*;..U.;.*" postag_regexp="yes"/>
+                    <token postag="NN.*;.*;.*" postag_regexp="yes" min="1" max="3"/>
+                    <token postag="NN.*;.*;.*" postag_regexp="yes" min="1" max="3"/>
+                </marker>
+               <token postag="NJ.*" postag_regexp="yes"/>
+                </pattern>
+                <filter class="org.languagetool.rules.ar.NumberPhraseFilter" args="previous:\1 previousPos:1 nextPos:-1"/>
+                <message>التحقق من الأعداد
+                    </message>
+<!--                  <example type="incorrect" correction="في ألف وخمسمائة واثنين وثلاثين"><marker>في ألف وخمسمئة واثنان وثلاثون</marker> صندوقا.</example>    -->
+<!--                  <example type="incorrect" correction="في ألف وخمسمائة واثنين وثلاثين"><marker>في ألف وخمسمئة واثنان وثلاثون</marker> صندوقا.</example>    -->
+                 <example type="incorrect" correction="في مليونين ومئتين وخمسة وأربعين ألفا وسبعمائة وواحد"><marker>في مليونان ومئتان وخمسة وأربعون ألفاً وسبعمائة وواحد</marker> صندوق.</example>   
+
+            </rule>
+  </rules>

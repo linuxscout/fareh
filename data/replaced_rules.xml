@@ -2944,3 +2944,92 @@
 
   </rule>
   
+<!-- trans_5_Amtthl_llAmr امْتَثَلَ للأمرِ -->
+  <rule id="trans_5_Amtthl_llAmr" name="امتثـل للأمر">
+    <pattern>
+      <marker>
+        <token  inflected="yes" skip="1">اِمْتَثَلَ</token>
+        <token regexp="yes">&forms_lih;</token>
+      </marker>
+    </pattern>
+    <message>الفعل (امتثل) يتعدّى بنفسه
+<!-- Verb Intransitive to transitive-->
+<suggestion><match no="1" postag="(V5.*a.;..)(-)" postag_replace="$1H">اِمْتَثَلَ</match><match no="2" regexp_match="ل" regexp_replace=""/></suggestion>
+</message>
+    <example correction="امتثلها" type="incorrect">
+      <marker>امتثل لها</marker>
+    </example>
+
+    <example type="correct"> امتثل الأمر </example>
+  </rule>
+  <!-- trans_5_Amtthl_llAmr امْتَثَلَ للأمرِ -->
+  <rule id="trans_5_Amtthl_llAmr_2" name="امتثـل للأمر">
+    <pattern>
+      <marker>
+        <token  inflected="yes" skip="1">اِمْتَثَلَ</token>
+        <token postag="N.*;.*;-L." postag_regexp="yes"/>
+      </marker>
+    </pattern>
+    <message>الفعل (امتثل) يتعدّى بنفسه
+ <suggestion><match no="1"/>&nbsp;<match no="2" postag="(N.*;)-L(.)" postag_replace="$1--$2" postag_regexp="yes"/></suggestion>
+</message>
+    <example correction="امتثل الأمر|امتثل الأمري" type="incorrect">
+      <marker>امتثل للأمر</marker>
+    </example>
+    <example type="correct"> امتثل الأمر </example>
+  </rule>
+  
+  <!-- trans_376_AstAdhn_mn استأذن من -->
+  <rule id="trans_376_AstAdhn_mn" name="استأذن من">
+    <pattern>
+    <marker>
+      <token inflected="yes" skip="1">اِسْتَأْذَنَ</token>
+      <token regexp="yes">&forms_minh;</token>
+      </marker>
+    </pattern>
+    <message>يفضل أن يقال:
+   <suggestion><match no="1" postag="(V.*a.;..)(-)" postag_replace="$1H">اِسْتَأْذَنَ</match><match no="2" regexp_match="من" regexp_replace=""/></suggestion>
+
+</message>
+    <example correction="استأذنه" type="incorrect"><marker>استأذن منه</marker></example>
+    <example correction="استأذنوه" type="incorrect"><marker>استأذنوا منه</marker></example>
+
+    <example type="correct"> استأذنه </example>
+  </rule>
+
+
+  <!-- trans_490_ynADl_Dd_AlAstEmAr يناضلُ ضدَّ الاستعمار -->
+  <rule id="trans_490_ynADl_Dd" name="يناضل ضد">
+    <pattern>
+      <marker>
+        <token inflected="yes" skip="1">نَاضَلَ</token>
+        <token regexp="yes">&forms_dhiddah;</token>
+      </marker>
+    </pattern>
+    <message>يفضل أن يقال:
+<!-- Verb Intransitive to transitive-->
+<suggestion><match no="1" postag="(V41.*a.;..)(-)" postag_replace="$1H">نَاضَلَ</match><match no="2" regexp_match="ضد" regexp_replace=""/></suggestion>
+</message>
+    <example correction="يناضلهم" type="incorrect"><marker>يناضل ضدهم</marker></example>
+
+    <example type="correct"> يناضلُ الاستعمار </example>
+
+  </rule>
+
+  <!-- trans_490_ynADl_Dd_AlAstEmAr يناضلُ ضدَّ الاستعمار -->
+  <rule id="trans_490_ynADl_Dd_2" name="يناضل ضد">
+    <pattern>
+      <marker>
+        <token inflected="yes" skip="1">نَاضَلَ</token>
+        <token>ضد</token>
+      </marker>
+    </pattern>
+    <message>يفضل أن يقال:
+<suggestion><match no="1"/></suggestion>
+</message>
+    <example correction="يناضل" type="incorrect"><marker>يناضل ضد</marker> الاستعمار  </example>
+    <example type="correct"> يناضلُ الاستعمار </example>
+
+  </rule>
+
+  

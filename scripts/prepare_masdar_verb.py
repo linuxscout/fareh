@@ -174,10 +174,10 @@ def tread_data(data):
 def main(args):
     data = load_file(DATA_FILE)
     # generate data and example for masdars
-    # ~ display(data, "masdar")
+    display(data, "masdar")
     # ~ generate_example(data,"masdar")
     # generate data and example for masdars
-    display(data, "verb")
+    #display(data, "verb")
     # ~ generate_example(data,"verb")
 
     return 0

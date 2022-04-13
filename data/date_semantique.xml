@@ -1,0 +1,431 @@
+   <category id="SEMANTICS" name="inconsistances sémantiques">
+        <rulegroup id="HIVER_DDDDD" name="hiver 20211 (2021)">
+            <antipattern>
+                <token inflected="yes">avoir</token>
+                <token>été</token>
+            </antipattern>
+            <rule>
+                <antipattern>
+                    <token>per</token>
+                    <token regexp="yes">ann|année</token>
+                </antipattern>
+                <pattern>
+                    <token regexp="yes">&mois_annee;&saisons_anne;saisons?|années?|cours
+                        <exception scope="previous">-</exception></token>
+                    <token postag="J.*|V ppa.*" postag_regexp="yes" min="0"/>
+                    <marker>
+                        <token regexp="yes">\d\d\d\d\d</token>
+                    </marker>
+                </pattern>
+                <message>Vouliez-vous dire une année à quatre chiffres?</message>
+                <example correction="">Été <marker>20211</marker></example>
+                <example>Ce jeu a été joué 81280 fois.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token regexp="yes">&mois_annee;<exception scope="previous">-</exception></token>
+                    <token min="0">.</token>
+                    <marker>
+                        <token regexp="yes">\d\d\d\d\d</token>
+                    </marker>
+                </pattern>
+                <message>Vouliez-vous dire une année à quatre chiffres?</message>
+                <example correction="">Oct <marker>20211</marker>.</example>
+                <!-- TODO: problem with sentence tokenization 
+                    <example correction="">Oct. <marker>20211</marker>.</example>-->
+            </rule>
+        </rulegroup>
+        <rulegroup id="DATE_JOUR" name="Date inconsistant avec jour">
+            <rule>
+                <pattern>
+                    <token regexp="yes">lundi|lun|mardi|mar|mercredi|mer|jeudi|jeu|vendredi|ven|samedi|sam|dimanche|dim</token>
+                    <token min="0" max="1">,</token>
+                    <token regexp="yes">[012]?\d|3[01]|1er</token>
+                    <token regexp="yes">janvier|janv?|février|févr?|mars?|avril|avr|mai|juin|juillet|juil|ao[uû]t?|septembre|sept?|octobre|oct|novembre|nov|décembre|déc</token>
+                    <token regexp="yes">[12]\d\d\d</token>
+                </pattern>
+                <filter class="org.languagetool.rules.fr.DateCheckFilter" args="year:\5 month:\4 day:\3 weekDay:\1"/>
+                <message>La date « \3 \4 \5 » n’est pas un <match no="1" case_conversion="alllower"/> mais un {realDay}.</message>
+                <example correction=""><marker>Vendredi 28 août 2014</marker>.</example>
+                <example correction=""><marker>Vendredi, 28 août 2014</marker>.</example>
+                <example correction=""><marker>Ven 28 août 2014</marker>.</example>
+                <example>Jeudi 28 août 2014.</example>
+                <example correction=""><marker>Lundi 14 septembre 2014</marker>.</example>
+                <example>Dimanche 14 septembre 2014.</example>
+                <example correction="">Le <marker>dimanche 18 juillet 2015</marker>.</example>
+                <example correction="">Le <marker>dimanche 18 juil 2015</marker>.</example>
+                <example>Le dimanche 19 juil 2015.</example>
+                <example>Le dimanche 19 juillet 2015.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token regexp="yes">lundi|lun|mardi|mar|mercredi|mer|jeudi|jeu|vendredi|ven|samedi|sam|dimanche|dim</token>
+                    <token min="0" max="1">,</token>
+                    <token regexp="yes">[012]?\d|3[01]</token>
+                    <token min="0" regexp="yes">-|/</token>
+                    <token regexp="yes">0?\d|1[012]</token>
+                    <token min="0" regexp="yes">-|/</token>
+                    <token regexp="yes">[12]\d\d\d</token>
+                </pattern>
+                <filter class="org.languagetool.rules.fr.DateCheckFilter" args="year:\7 month:\5 day:\3 weekDay:\1"/>
+                <message>La date « \3\4\5\6\7 » n’est pas un <match no="1" case_conversion="alllower"/> mais un {realDay}.</message>
+                <example correction=""><marker>Vendredi 28/08/2014</marker>.</example>
+                <example correction=""><marker>Vendredi 28/8/2014</marker>.</example>
+                <example correction=""><marker>Vendredi, 28/8/2014</marker>.</example>
+                <example correction=""><marker>Ven 28/8/2014</marker>.</example>
+                <example correction=""><marker>Vendredi 28-8-2014</marker>.</example>
+                <example correction=""><marker>Vendredi 28-08-2014</marker>.</example>
+                <example correction=""><marker>Vendredi, 28-08-2014</marker>.</example>
+                <example><marker>Jeudi 28-08-2014</marker>.</example>
+                <example><marker>Jeudi 28/08/2014</marker>.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token regexp="yes">lundi|lun|mardi|mar|mercredi|mer|jeudi|jeu|vendredi|ven|samedi|sam|dimanche|dim</token>
+                    <token min="0" max="1">,</token>
+                    <token regexp="yes">[12]\d\d\d</token>
+                    <token min="0" regexp="yes">-|/</token>
+                    <token regexp="yes">0?\d|1[012]</token>
+                    <token min="0" regexp="yes">-|/</token>
+                    <token regexp="yes">[012]?\d|3[01]</token>
+                </pattern>
+                <filter class="org.languagetool.rules.fr.DateCheckFilter" args="year:\3 month:\5 day:\7 weekDay:\1"/>
+                <message>La date « \3\4\5\6\7 » n’est pas un <match no="1" case_conversion="alllower"/> mais un {realDay}.</message>
+                <example correction=""><marker>Vendredi 2014/08/28</marker>.</example>
+                <example correction=""><marker>Vendredi, 2014/08/28</marker>.</example>
+                <example correction=""><marker>Ven, 2014/08/28</marker>.</example>
+                <example><marker>Jeudi 2014/08/28</marker>.</example>
+            </rule>
+            <!--<rule>
+        <pattern>
+          <token regexp="yes">lundi|lun|mardi|mar|mercredi|mer|jeudi|jeu|vendredi|ven|samedi|sam|dimanche|dim</token>
+          <token min="0" max="1">,</token>
+          <token regexp="yes">\d\d?</token>
+          <token>-</token>
+          <token regexp="yes">\d\d?</token>
+          <token>-</token>
+          <token regexp="yes">\d\d\d\d</token>
+        </pattern>
+        <filter class="org.languagetool.rules.fr.DMYDateCheckFilter" args="year:\3 month:\5 day:\7 weekDay:\1"/>
+        <message>La date « \1\2 \3 » n’est pas un <match no="1" case_conversion="alllower"/> mais un {realDay}.</message>
+        <example correction=""><marker>Vendredi 28-8-2014</marker>.</example>
+        <example correction=""><marker>Vendredi 28-08-2014</marker>.</example>
+        <example correction=""><marker>Vendredi, 28-08-2014</marker>.</example>
+        <example><marker>Jeudi 28-08-2014</marker>.</example>
+      </rule>-->
+        </rulegroup>
+        <rulegroup id="DATE" name="date incorrecte">
+            <rule>
+                <pattern>
+                    <token>31</token>
+                    <token regexp="yes">avril|avr|juin|jui|septembre|sep|novembre|nov</token>
+                </pattern>
+                <message>Le mois « \2 » n’a que 30 jours.</message>
+                <example correction="">Il est né le <marker>31 septembre</marker>.</example>
+                <example>Il est né le <marker>31 octobre</marker>.</example>
+                <example>Il est né le <marker>30 septembre</marker>.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token>31</token>
+                    <token>/</token>
+                    <token regexp="yes">avril|avr|juin|jui|septembre|sep|novembre|nov|0?[469]|11</token>
+                    <token>/</token>
+                    <token regexp="yes">\d\d\d\d</token>
+                </pattern>
+                <message>Le mois « \3 » n’a que 30 jours.</message>
+                <example correction="">Il est né le <marker>31/septembre/1969</marker>.</example>
+                <example correction="">Il est né le <marker>31/09/1969</marker>.</example>
+                <example correction="">Il est né le <marker>31/9/1969</marker>.</example>
+                <example>Il est né le <marker>31/10/1969</marker>.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token>31</token>
+                    <token min="0" regexp="yes">-|/</token>
+                    <token regexp="yes">avril|avr|juin|jui|septembre|sep|novembre|nov|0?[469]|11</token>
+                </pattern>
+                <message>Le mois « \3 » n’a que 30 jours.</message>
+                <example correction="">Il est né le <marker>31-septembre</marker>-1969.</example>
+                <example correction="">Il est né le <marker>31-09</marker>-1969.</example>
+                <example correction="">Il est né le <marker>31-9</marker>-69.</example>
+                <example>Il est né le <marker>31-8-69</marker>.</example>
+                <example>Il est né le <marker>31-aout-1969</marker>.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token regexp="yes">3[01]</token>
+                    <token min="0" regexp="yes">-|/</token>
+                    <token regexp="yes">février|fév</token>
+                </pattern>
+                <message>Le mois de février n’a que 28 ou 29 jours pour les années bissextiles.</message>
+                <url>https://fr.wikipedia.org/wiki/Ann%C3%A9e_bissextile</url>
+                <example correction="">Il est né le <marker>30 février</marker>.</example>
+                <example>Il est né le <marker>28 février</marker>.</example>
+            </rule>
+            <rule>
+                <pattern>
+                    <token regexp="yes">3[01]</token>
+                    <token min="0" regexp="yes">-|/</token>
+                    <token regexp="yes">février|fév|0?2</token>
+                    <token min="0" regexp="yes">-|/</token>
+                    <token regexp="yes">\d\d\d\d</token>
+                </pattern>
+                <message>Le mois de février n’a que 28 ou 29 jours pour les années bissextiles.</message>
+                <url>https://fr.wikipedia.org/wiki/Ann%C3%A9e_bissextile</url>
+                <example correction="">Il est né le <marker>30/février/1969</marker>.</example>
+                <example correction="">Il est né le <marker>30-02-1969</marker>.</example>
+                <example>Il est né le <marker>28-02-1969</marker>.</example>
+                <example>Il est né le <marker>28 février</marker>.</example>
+            </rule>
+            <!--<rule>
+        <pattern>
+          <token regexp="yes">3[01][-‑‐](février|fév|0?2)([-‑‐]\d\d(\d\d)?)?</token>
+        </pattern>
+        <message>Le mois de février n’a que 28 ou 29 jours pour les années bissextiles.</message>
+        <url>https://fr.wikipedia.org/wiki/Ann%C3%A9e_bissextile</url>
+        <example correction="">Il est né le <marker>30-02-1969</marker>.</example>
+        <example>Il est né le <marker>28-02-1969</marker>.</example>
+      </rule>-->
+            <rule>
+                <pattern>
+                    <token>29</token>
+                    <token min="0" regexp="yes">-|/</token>
+                    <token regexp="yes">février|fév|0?2</token>
+                    <token min="0" regexp="yes">-|/</token>
+                    <token regexp="yes">\d\d(00|\d[13579]|[02468][26]|[13579][048])
+                        <exception regexp="yes">[13579][26]00|[2468][048]00</exception></token>
+                </pattern>
+                <message>Le mois de février \5 n’a pas 29 jours, puisque \5 n’est pas une année bissextile.</message>
+                <url>https://fr.wikipedia.org/wiki/Ann%C3%A9e_bissextile</url>
+                <!-- 1900 is not a leap year (divisible by 100) -->
+                <example correction="">Le <marker>29 février 1900</marker>.</example>
+                <example correction="">Le <marker>29/février/1900</marker>.</example>
+                <example correction="">Le <marker>29/02/1900</marker>.</example>
+                <example correction="">Le <marker>29/2/1900</marker>.</example>
+                <!-- 2000 is a leap year (divisible by 400) -->
+                <example>Le <marker>29 février 2000</marker>.</example>
+                <example>Le <marker>29/février/2000</marker>.</example>
+                <example>Le <marker>29/02/2000</marker>.</example>
+                <example>Le <marker>29/2/2000</marker>.</example>
+                <example correction="">Le <marker>29 février 2001</marker>.</example>
+                <example correction="">Le <marker>29 février 2002</marker>.</example>
+                <example correction="">Le <marker>29 février 2003</marker>.</example>
+                <!-- 2004 is a leap year (divisible by 4) -->
+                <example>Le <marker>29 février 2004</marker>.</example>
+                <example correction="">Le <marker>29 février 2005</marker>.</example>
+                <example correction="">Le <marker>29 février 2006</marker>.</example>
+                <example correction="">Le <marker>29 février 2007</marker>.</example>
+                <!-- 2008 is a leap year (divisible by 4) -->
+                <example>Le <marker>29 février 2008</marker>.</example>
+                <example correction="">Le <marker>29 février 2009</marker>.</example>
+                <example correction="">Le <marker>29 février 2010</marker>.</example>
+                <example correction="">Le <marker>29 février 2011</marker>.</example>
+                <!-- 2012 is a leap year (divisible by 4) -->
+                <example>Le <marker>29 février 2012</marker>.</example>
+                <example correction="">Le <marker>29 février 2014</marker>.</example>
+                <example>Le <marker>29 février 2016</marker>.</example>
+                <example correction="">Le <marker>29 février 2018</marker>.</example>
+                <example>Le <marker>29 février 2020</marker>.</example>
+                <!-- 2100 is not a leap year (divisible by 100) -->
+                <example correction="">Le <marker>29 février 2100</marker>.</example>
+                <example correction="">Le <marker>29-02-1900</marker></example>
+                <example correction="">Le <marker>29-février-2005</marker></example>
+                <example>Le 29-février-2004</example>
+            </rule>
+            <!--<rule>
+        <pattern>
+          <token regexp="yes">29[-‑‐](février|fév|0?2)[-‑‐]\d\d(00|\d[13579]|[02468][26]|[13579][048])
+            <exception regexp="yes">29[-‑‐][^-]+[-‑‐][13579][26]00|[2468][048]00</exception></token>
+        </pattern>
+        <message>Le mois de février n’a pas 29 jours, puisque <match no="1" regexp_match=".*(\d\d\d\d)$" regexp_replace="$1"/> n’est pas une année bissextile.</message>
+        <url>https://fr.wikipedia.org/wiki/Ann%C3%A9e_bissextile</url>
+        <example correction="">Le <marker>29-02-1900</marker></example>
+        <example correction="">Le <marker>29-février-2005</marker></example>
+        <example>Le 29-février-2004</example>
+      </rule>-->
+         <rule>
+            <pattern>
+                <token regexp="yes">[12]\d\d\d</token>
+                <token regexp="yes">&mois_annee;</token>
+                <token regexp="yes">\d\d|\d</token>
+            </pattern>
+            <message>L'ordre des mots de la date doit être modifié.</message>
+            <suggestion>\3 \2 \1</suggestion>
+            <example correction="22 décembre 2022">La date d'aujourd'hui est le <marker>2022 décembre 22</marker>.</example>
+        </rule>
+         <rule>
+            <pattern>
+                <token regexp="yes">[12]\d\d\d<exception scope="previous" regexp="yes">&mois_annee;|:</exception></token>
+                <token regexp="yes">&mois_annee;</token>
+            </pattern>
+            <message>L'ordre des mots de la date doit être modifié.</message>
+            <suggestion>\2 \1</suggestion>
+            <example correction="décembre 2022">Il viendra en <marker>2022 décembre</marker>.</example>
+        </rule>
+         <rule>
+            <pattern>
+                <token regexp="yes">&mois_annee;</token>
+                <token regexp="yes">\d\d|\d</token>
+                <token regexp="yes">&jours_semaine;</token>
+            </pattern>
+            <message>L'ordre des mots de la date doit être modifié.</message>
+            <suggestion>\3 \2 \1</suggestion>
+            <example correction="vendredi 22 décembre">Nous sommes <marker>décembre 22 vendredi</marker>.</example>
+        </rule>
+         <rule>
+            <pattern>
+                <token regexp="yes">&jours_semaine;<exception scope="previous">le</exception></token>
+                <token>le</token>
+                <token regexp="yes">\d\d|\d</token>
+                <token regexp="yes">&mois_annee;</token>
+            </pattern>
+            <message>L'ordre des mots de la date doit être modifié.</message>
+            <suggestion>le \1 \3 \4</suggestion>
+            <example correction="le dimanche 10 décembre">Nous sommes <marker>dimanche le 10 décembre</marker>.</example>
+        </rule>
+         <rule>
+            <pattern>
+                <token>le</token>
+                <token regexp="yes">&jours_semaine;</token>
+                <token>le</token>
+                <token regexp="yes">\d\d|\d</token>
+                <token regexp="yes">&mois_annee;</token>
+            </pattern>
+            <message>L'ordre des mots de la date doit être modifié.</message>
+            <suggestion>\1 \2 \4 \5</suggestion>
+            <example correction="le dimanche 10 décembre">Nous sommes <marker>le dimanche le 10 décembre</marker>.</example>
+        </rule>
+         <rule>
+            <pattern>
+                <token regexp="yes">&mois_annee;</token>
+                <token min="0" max="1">,</token>
+                <token regexp="yes">\d\d|\d</token>
+                <token min="0" max="1">,</token>
+                <token regexp="yes">[12]\d\d\d</token>
+            </pattern>
+            <message>L'ordre des mots de la date doit être modifié.</message>
+            <suggestion>\3 \1 \5</suggestion>
+            <example correction="22 décembre 1999">La date est : <marker>décembre 22 1999</marker>.</example>
+        </rule>
+         <rule>
+            <antipattern>
+                <token>mai</token>
+                <token>68</token>
+            </antipattern>
+            <pattern>
+                <token regexp="yes">&mois_annee;<exception scope="previous" regexp="yes">\d.*</exception></token>
+                <token regexp="yes">\d\d
+                <exception scope="next" regexp="yes">[\/]|av|ap|:|&mois_annee;|h|ans?</exception></token>
+            </pattern>
+            <message>Cette écriture de la date peut sembler familière dans un contexte formel.</message>
+            <suggestion>\1 19\2</suggestion>
+            <suggestion>\2 \1</suggestion>
+            <example correction="décembre 1922|22 décembre">Il est mort en <marker>décembre 22</marker>.</example>
+        </rule>
+         <rule>
+            <antipattern>
+                <token>mai</token>
+                <token>68</token>
+            </antipattern>
+            <pattern>
+                            <token regexp="yes">\d|\d\d</token>
+                            <marker>
+                <token regexp="yes">&mois_annee;<exception scope="previous">\d.*</exception></token>
+                <token regexp="yes">\d\d
+                <exception scope="next" regexp="yes">[\/]|av|ap|:|&mois_annee;|h|ans?</exception></token>
+                </marker>
+            </pattern>
+            <message>Cette écriture de la date peut sembler familière dans un contexte formel.</message>
+            <suggestion>\2 19\3</suggestion>
+            <example correction="décembre 1922">Il est mort en 22 <marker>décembre 22</marker>.</example>
+        </rule>
+        </rulegroup>
+        <rulegroup id="ADRESSES_FRANCE" name="Format des adresses en France">
+            <!-- TODO: improve this rule to detect other problems in French addresses -->
+            <rule>
+                <regexp type="exact" mark="1">\b(?:Rue|Ruelle|Avenue|Av\.|Place|Pl\.|Boulevard|Boul\.|Impasse|Imp.|Chemin|Allée|Chaussée|Montée|Passage|Lieu-dit)[  ][^,\n]+\s*[,\n]\s*(\p{Lu}[^,%\d\n]+[  ]\d{5})\s*[,\n]\s*(?:FRANCE|FRANCIA|FRANKRIJK|FRANKREICH)\b</regexp>
+                <message>Le code postal doit être avant le nom de la ville pour les adresses postales en France.</message>
+                <example correction="">5 Rue de l’église, <marker>BREST 29200</marker>, FRANCE</example>
+                <example>5 Rue de l’église, 29200 BREST, FRANCE</example>
+            </rule>
+            <rule default="off">
+
+                <!-- Too much FPS / When country is not specified, we can still guess that the address
+             is in France for some big well known cities.
+             See http://www.toutes-les-villes.com/villes-departements/29-finistere.html
+             for the biggest cities per departement -->
+                <regexp>\b(?:(?:Bourg[-‑‐ ]en[-‑‐ ]Bresse|Oyonnax|Amb[ée]rieu[-‑‐ ]en[-‑‐ ]Bugey) 01\d\d\d|(?:Saint[-‑‐ ]Quentin|Soissons|Laon|Tergnier) 02\d\d\d|(?:Monlu[çc]on|Vischy|Moulins|Cusset|Yzeure|Dom[ée]rat) 03\d\d\d|(?:Manosque|Digne[-‑‐ ]les[-‑‐ ]Bains|Sisteron) 04\d\d\d|(?:Gap|Brian[çc]on|Embrun) 05\d\d\d|(?:Antibes|Cagnes[-‑‐ ]sur[-‑‐ ]Mer|Cannes|Grasse|Nice) 06\d\d\d|(?:Annonay|Aubennas) 07\d\d\d|(?:Charleville[-‑‐ ]M[ée]zi[èe]res|Givet|Rethel|Revin|Sedan) 08\d\d\d|(?:Foix|Pamiers) 09\d\d\d|(?:La[-‑‐ ]Chapelle[-‑‐ ]Saint[-‑‐ ]Luc|Romily[-‑‐ ]sur[-‑‐ ]Seine|Saint[-‑‐ ]Andr[ée][-‑‐ ]les[-‑‐ ]Vergers|Troyes) 10\d\d\d|(?:Carcassonne|Castelnaudary|Limoux|Narbonne) 11\d\d\d|(?:Onet[-‑‐ ]le[-‑‐ ]Ch[âa]teau|Milau|Rodez|Villefranche[-‑‐ ]de[-‑‐ ]Rouergue) 12\d\d\d|(?:Aix[-‑‐ ]en[-‑‐ ]Provence|Allauch|Arles|Aubagne|Fos[-‑‐ ]sur[-‑‐ ]Mer|Gardanne|Istres|La[-‑‐ ]Ciotat|Les[-‑‐ ]Pennes[-‑‐ ]Mirabeau|Marignane|Marseille|Martigues|Miramas|Port[-‑‐ ]de[-‑‐ ]Bouc|Salon[-‑‐ ]de[-‑‐ ]Provence|Tarascon|Vitrolles) 13\d\d\d|(?:Bayeux|Caen|Ifs|Lisieux|H[ée]rouville[-‑‐ ]Saint[-‑‐ ]Clair|Mondeville|Vire) 14\d\d\d|(?:Aurillac|Saint[-‑‐ ]Flour) 15\d\d\d|(?:Angoul[èêe]me|Cognac|Soyaux) 16\d\d\d|(?:La[-‑‐ ]Rochelle|Rochefort|Royan|Saintes) 17\d\d\d|(?:Bourges|Vierzon) 18\d\d\d|(?:Brive[-‑‐ ]la[-‑‐ ]Guaillarde|Tulle|Ussel) 19\d\d\d|(?:Ajaccio|Porto[-‑‐ ]Vecchio|Sart[èe]ne) 2[A0]\d\d\d|(?:Bastia|Calvi|Corte) 2[B0]\d\d\d|(?:Beaune|Chenôve|Chevigny[-‑‐ ]Saint[-‑‐ ]Sauveur|Dijon|Quetigny|Talant) 21\d\d\d|(?:Dinan|Lannion|Pl[ée]rin|Ploufragan|Saint[-‑‐ ]Brieuc) 22\d\d\d|(?:Aubusson|La[-‑‐ ]Souterraine|Gu[éé]ret) 23\d\d\d|(?:Bergerac|P[é]rigneux) 24\d\d\d|(?:Audincourt|Besan[çc]on|Bethoncourt|Montb[ée]liard|Pontarlier|Valentigney) 25\d\d\d|(?:Bourg[-‑‐ ]l[èe]s[-‑‐ ]Valence|Mont[ée]limar|Pierrelatte|Romans[-‑‐ ]sur[-‑‐ ]Is[èe]re|Valence) 26\d\d\d|(?:Bernay|[ÉE]vreux|Gisors|Louviers|Val[-‑‐ ]de[-‑‐ ]Reuil|Vernon) 27\d\d\d|(?:Chartres|Ch[âa]teaudun|Dreux|Lucé|Mainvilliers|Nogent[-‑‐ ]le[-‑‐ ]Rotrou|Vernouillet) 28\d\d\d|(?:Brest|Guipavas|Concarneau|Douarnenez|Fouesnant|Landerneau|Landivisau|Le[-‑‐ ]Relecq[-‑‐ ]Kerhuon|Morlaix|Plougastel[-‑‐ ]Daoulas|Plouzané|Quimper|Quimperlé) 29\d\d\d|(?:Alès|Beaucaire|Bagnol[-‑‐ ]sur[-‑‐ ]C[èe]ze|N[îi]mes|Saint[-‑‐ ]Gilles|Vauvert|Villeneuve[-‑‐ ]les[-‑‐ ]Avignon) 30\d\d\d|31\d\d\d|(?:Blagnac|Colomiers|Cugnaux|Muret|Plaisance[-‑‐ ]du[-‑‐ ]Touch|Toulouse|Tournefeuille) 31\d\d\d|(?:Auch|Condom) 32\d\d\d|(?:Ambar[èe]s[-‑‐ ]et[-‑‐ ]Lagrave|Arcachon|B[èe]gles|Bruges|Blanquefort|Bordeaux|Cenon|Cestas|Eysines|Floirac|Gradignan|Gujan[-‑‐ ]Mestras|Le[-‑‐ ]Bouscat|Lormont|Mérignac|Pessac|Talence|Villenave[-‑‐ ]d['´‘’′]Ornon|Saint[-‑‐ ]M[ée]dard[-‑‐ ]en[-‑‐ ]Jalles) 33\d\d\d|(?:Agde|B[ée]ziers|Castelnau[-‑‐ ]le[-‑‐ ]Lez|Frontignan|Lattes|Lunel|Mauguio|Montpellier|Sète) 34\d\d\d|(?:Betton|Bruz|Cesson[-‑‐ ]Sévigné|Dinard|Foug[èe]res|Pacé|Redon|Rennes|Saint[-‑‐ ]Malo|Vitré) 35\d\d\d|(?:Ch[âa]teauroux|Déols|Issoudun|Le[-‑‐ ]Blanc) 36\d\d\d|(?:Amboise|Joué[-‑‐ ]l[èe]s[-‑‐ ]Tours|Saint[-‑‐ ]Avertin|Saint[-‑‐ ]Cyr[-‑‐ ]sur[-‑‐ ]Loire|Saint[-‑‐ ]Pierre[-‑‐ ]des[-‑‐ ]Corps|Tours) 37\d\d\d|(?:Bourgoin[-‑‐ ]Jallieu|[ÉE]chirolles|Fontaine|Grenoble|Maylan|Saint[-‑‐ ][ÉE]gr[èe]ve|Saint[-‑‐ ]Martin[-‑‐ ]d['´‘’′]H[èe]res|Vienne|Villefontaine|Voiron) 38\d\d\d|(?:Champagnole|Dole|Lons[-‑‐ ]le[-‑‐ ]Saunier|Morez|Saint[-‑‐ ]Claude) 39\d\d\d|(?:Biscarrosse|Capbreton|Dax|Mont[-‑‐ ]de[-‑‐ ]Marsan|Saint[-‑‐ ]Paul[-‑‐ ]l[èe]s[-‑‐ ]Dax|Tarnos) 40\d\d\d|(?:Blois|Romorantin[-‑‐ ]Lanthenay|Vend[ôo]pme) 41\d\d\d|(?:Firminy|Montbrison|Rive[-‑‐ ]de[-‑‐ ]Gier|Saint[-‑‐ ]Chamond|Saint[-‑‐ ][ÉE]tienne|Roanne) 42\d\d\d|(?:Brioude|Le[-‑‐ ]Puy[-‑‐ ]en[-‑‐ ]Velay|Monistrol[-‑‐ ]sur[-‑‐ ]Loire) 43\d\d\d|(?:Bouguenais|Carquefou|Ch[âa]teaubriant|Co[ëe]ron|Gu[ée]rande|Nantes|Pornic|Pornichet|La[-‑‐ ]Baule[-‑‐ ]Escoublac|La[-‑‐ ]Chapelle[-‑‐ ]sur[-‑‐ ]Erdre|Orvault|Rezé|Saint[-‑‐ ]Herblain|Saint[-‑‐ ]Nazaire|Saint[-‑‐ ]S[ée]bastien[-‑‐ ]sur[-‑‐ ]Loire|Sainte[-‑‐ ]Luce[-‑‐ ]sur[-‑‐ ]Loire|Vertou) 44\d\d\d|(?:Fleury[-‑‐ ]les[-‑‐ ]Aubrais|Gien|Montargis|Olivet|Orléans|Saint[-‑‐ ]Jean[-‑‐ ]de[-‑‐ ]Braye|Saint[-‑‐ ]Jean[-‑‐ ]de[-‑‐ ]la[-‑‐ ]Ruelle|Saran) 45\d\d\d|(?:Cahors|Figeac|Gourdon) 46\d\d\d|(?:Agen|Marmande|N[ée]rac|Tonneins|Villeneuve[-‑‐ ]sur[-‑‐ ]Lot) 47\d\d\d|(?:Marvejols|Mende) 48\d\d\d|(?:Angers|Avrillé|Cholet|Saumur) 49\d\d\d|(?:Avranches|Cherbourg|Coutances|[ÉE]queurdreville[-‑‐ ]Hainneville|Granville|Octeville|Tourlaville|Saint[-‑‐ ]L[ôo]|Valognes) 50\d\d\d|(?:B[ée]theny|Ch[âa]lons[-‑‐ ]en[-‑‐ ]Champagne|Cormontreuil|[ÉE]pernay|Reims|Tinqueux|Vitry[-‑‐ ]le[-‑‐ ]Fran[çc]ois) 51\d\d\d|(?:Chaumont|Langres|Saint[-‑‐ ]Dizier) 52\d\d\d|(?:[ÉE]vron|Ch[âa]teau[-‑‐ ]Gontier|Laval|Mayenne) 53\d\d\d|(?:Nancy|Lunéville|Toul|Vandœuvre[-‑‐ ]l[èe]s[-‑‐ ]Nancy|Villiers[-‑‐ ]l[èe]s[-‑‐ ]Nancy) 54\d\d\d|(?:Commercy|Bar[-‑‐ ]le[-‑‐ ]Duc|Saint[-‑‐ ]Mihiel|Verdun) 55\d\d\d|(?:Auray|Carnac|Gourin|Guidel|Hennebont|Larmor[-‑‐ ]Plage|Lorient|Ploemeur|Pontivy|Vannes|Lanester) 56\d\d\d|(?:Creutzwald|Fameck|Florange|Forbach|Freyming[-‑‐ ]Merlebach|Hayange|Marly|Metz|Montigny[-‑‐ ]l[èe]s[-‑‐ ]Metz|Rombas|Saint[-‑‐ ]Avold|Sarrebourg|Sarreguemines|Stiring[-‑‐ ]Wendel|Thionville|Woippy|Yutz) 57\d\d\d|(?:Cosne[-‑‐ ]Cours[-‑‐ ]sur[-‑‐ ]Loire|Decize|Nevers|Varennes[-‑‐ ]Vauzelles) 58\d\d\d|(?:Armenti[èe]re|Coudekerque[-‑‐ ]Branche|Douai|Cambrai|Dunkerque|Grande[-‑‐ ]Synthe|Lambersart|Lille|Maubeuge|Roubaix|Saint[-‑‐ ]Paul[-‑‐ ]sur[-‑‐ ]Mer|Tourcoing|Villeneuve[-‑‐ ]d['´‘’′]Ascq|Valenciennes|Wattrelos) 59\d\d\d|(?:Beauvais|Compi[èe]gne|Creil|M[ée]ru|Nogent[-‑‐ ]sur[-‑‐ ]Oise|Noyon|Senlis) 60\d\d\d|(?:Alen[çc]on|Argentan|Flers) 61\d\d\d|(?:Arras|Avion|Berck|B[ée]thune|Boulogne[-‑‐ ]sur[-‑‐ ]Mer|Bruay[-‑‐ ]la[-‑‐ ]Buissi[èe]re|Calais|Carvin|Harnes|H[ée]nin[-‑‐ ]Beaumont|Lens|Lièvin|Longuenesse|Outreau|Saint[-‑‐ ]Omer) 62\d\d\d|(?:Aubi[èe]re|Beaumont|Chamali[èe]res|Clermont[-‑‐ ]Ferrand|Cournon[-‑‐ ]d['´‘’′]Auvergne|Gerzat|Issoire|Riom|Thiers) 63\d\d\d|(?:Anglet|Bayone|Biarritz|Bill[èe]re|Hendaye|Lons|Pau|Saint[-‑‐ ]Jean[-‑‐ ]de[-‑‐ ]Luz) 64\d\d\d|(?:Tarbes|Lourdes) 65\d\d\d|(?:Argel[èe]s[-‑‐ ]sur[-‑‐ ]Mer|Canet[-‑‐ ]en[-‑‐ ]Roussillon|Perpignan|Saint[-‑‐ ]Cyprien|Saint[-‑‐ ][ÈE]st[èe]ve) 66\d\d\d|(?:Bischheim|Bischwiller|Haguenau|Illkirch[-‑‐ ]Graffenstaden|Lingolsheim|Ostwald|Saverne|Schiltigheim|Sélestat|Strasbourg) 67\d\d\d|(?:Colmar|Illzach|Kingersheim|Mulhouse|Saint[-‑‐ ]Louis|Riedisheim|Rixheim|Wittenheim) 68\d\d\d|(?:Bron|Caluire[-‑‐ ]et[-‑‐ ]Cuire|[ÉE]cully|Givors|Lyon|Meyzieu|Mions|Oullins|Rillieux[-‑‐ ]la[-‑‐ ]Pape|Saint[-‑‐ ]Priest|Sainte[-‑‐ ]Foy[-‑‐ ]l[èe]s[-‑‐ ]Lyon|Vaulx[-‑‐ ]en[-‑‐ ]Velin|V[ée]nissieux|Villeurbanne|Villefranche[-‑‐ ]sur[-‑‐ ]Sa[ôo]ne) 69\d\d\d|(?:H[ée]ricourt|Lure|Vesoul) 70\d\d\d|(?:Autun|Chalon[-‑‐ ]sur[-‑‐ ]Sa[ôo]ne|Le[-‑‐ ]Creusot|M[âa]con|Montceau[-‑‐ ]les[-‑‐ ]Mines|Saint[-‑‐ ]Vallier) 71\d\d\d|(?:Allones|Coulaines|La[-‑‐ ]Ferté[-‑‐ ]Bernard|La[-‑‐ ]Fl[èe]che|Le[-‑‐ ]Mans|Sablé[-‑‐ ]sur[-‑‐ ]Sarthe) 72\d\d\d|(?:Aix[-‑‐ ]les[-‑‐ ]Bains|Albertville|Chambéry) 73\d\d\d|(?:Annecy|Annecy[-‑‐ ]le[-‑‐ ]Vieux|Annemasse|Bonneville|Cluses|Cran[-‑‐ ]Gevrier|Rumily|Sallanches|Seynod|Thonon[-‑‐ ]les[-‑‐ ]Bains) 74\d\d\d|Paris 75\d\d\d|(?:Barentin|Bois[-‑‐ ]Guillaume|Bolbec|Canteleu|Dieppe|F[ée]camp|Elbeuf|Le[-‑‐ ]Grand[-‑‐ ]Quevilly|Le[-‑‐ ]Havre|Marommes|Mont[-‑‐ ]Saint[-‑‐ ]Aignan|Montvilliers|Oissel|Rouen|Saint[-‑‐ ][ÉE]tienne[-‑‐ ]du[-‑‐ ]Rouvray|Sotteville[-‑‐ ]l[èe]s[-‑‐ ]Rouen|Yvetot) 76\d\d\d|(?:Champs[-‑‐ ]sur[-‑‐ ]Marnes|Chelles|Combs[-‑‐ ]la[-‑‐ ]Ville|Dammarie[-‑‐ ]les[-‑‐ ]lys|Lagny[-‑‐ ]sur[-‑‐ ]Marne|Le[-‑‐ ]Mée[-‑‐ ]sur[-‑‐ ]Seine|Meaux|Melun|Ozoir[-‑‐ ]la[-‑‐ ]Ferri[èe]re|Pontault[-‑‐ ]Combault|Roissy[-‑‐ ]en[-‑‐ ]Brie|Savigny[-‑‐ ]le[-‑‐ ]Temple|Torcy|Villeparisis) 77\d\d\d|(?:Anchères|Chatou|Conflas[-‑‐ ]Sainte[-‑‐ ]Honorine|[ÉE]lancourt|Guyancourt|Houilles|La[-‑‐ ]Celle[-‑‐ ]Saint[-‑‐ ]Cloud|Le[-‑‐ ]Chesnay|Le[-‑‐ ]Pecq|Le[-‑‐ ]V[ée]sinet|Les[-‑‐ ]Clayes[-‑‐ ]sous[-‑‐ ]Bois|Les[-‑‐ ]Mureaux|Maison[-‑‐ ]Laffitte|Limay|Mantes[-‑‐ ]la[-‑‐ ]Jolie|Mantes[-‑‐ ]la[-‑‐ ]Ville|Marly[-‑‐ ]le[-‑‐ ]Roi|Maurepas|Montigny[-‑‐ ]le[-‑‐ ]Bretonneux|Plaisir|Poissy|Rambouillet|Saint[-‑‐ ]Germain[-‑‐ ]en[-‑‐ ]Laye|Satrouville|Trappes|V[ée]lizy[-‑‐ ]Villacoublay|Versailles|Viroflay) 78\d\d\d|(?:Bresuire|Maul[ée]on|Partenay|Niort|Thouars) 79\d\d\d|(?:Abbeville|Amiens) 80\d\d\d|(?:Albi|Castres|Gaillac|Graulhet|Marzamet) 81\d\d\d|(?:Castelsarrasin|Caussade|Moissac|Montauban) 82\d\d\d|(?:Brignoles|Draguignan|Fr[ée]jus|Hy[èe]res|La[-‑‐ ]Crau|La[-‑‐ ]Garde|La[-‑‐ ]Seyne[-‑‐ ]sur[-‑‐ ]Mer|La[-‑‐ ]Vilette[-‑‐ ]du[-‑‐ ]Var|Saint[-‑‐ ]Rapha[ëe]l|Six[-‑‐ ]Fours[-‑‐ ]le[-‑‐ ]Plages|Toulon) 83\d\d\d|(?:Avignon|Carpentras|Cavaillon|Orange|Pertuis|Sorgues) 84\d\d\d|(?:Challans|Fontenay[-‑‐ ]le[-‑‐ ]Comte|La[-‑‐ ]Roche[-‑‐ ]sur[-‑‐ ]Yon|Les[-‑‐ ]Herbies|Les[-‑‐ ]Sables[-‑‐ ]d['´‘’′]Olonne) 85\d\d\d|(?:Bruxerolles|Ch[âa]tellerault|Chauvigny|Loudun|Poitiers) 86\d\d\d|(?:Limoges|Panazol|Saint[-‑‐ ]Julien) 87\d\d\d|(?:[ÉE]pinal|Saint[-‑‐ ]Di[ée]) 88\d\d\d|(?:Auxerre|Avallon|Joigny|Sens) 89\d\d\d|(?:Beaucourt|Belfort|Delle) 90\d\d\d|(?:Athis[-‑‐ ]Mons|Br[ée]tigny[-‑‐ ]sur[-‑‐ ]Orge|Brunoy|Bures[-‑‐ ]sur[-‑‐ ]Yvette|Chilly[-‑‐ ]Mazarin|Corbeil[-‑‐ ]Essonnes|Courcouronnes|Dourdan|Draveil|[ÉE]tames|[ÉE]vry|Gif[-‑‐ ]sur[-‑‐ ]Yvette|Grigny|Juvisy[-‑‐ ]sur[-‑‐ ]Orge|Igny|Les[-‑‐ ]Ulis|Longjumeau|Massy|Mennecy|Montgeron|Morangis|Morsang[-‑‐ ]sur[-‑‐ ]Orge|Orsay|Palaiseau|Ris[-‑‐ ]Orangis|Saint[-‑‐ ]Genevi[èe]ve[-‑‐ ]des[-‑‐ ]Bois|Saint[-‑‐ ]Michel[-‑‐ ]sur[-‑‐ ]Orge|Savigny[-‑‐ ]sur[-‑‐ ]Orge|Verri[èe]res[-‑‐ ]le[-‑‐ ]Buisson|Villebon[-‑‐ ]sur[-‑‐ ]Yvette|Vigneux[-‑‐ ]sur[-‑‐ ]Seine|Viry[-‑‐ ]Ch[âa]tillon|Yerres) 91\d\d\d|(?:Antony|Asnières[-‑‐ ]sur[-‑‐ ]Seine|Bagneux|Bois[-‑‐ ]Colombes|Boulogne[-‑‐ ]Billancourt|Bourg[-‑‐ ]la[-‑‐ ]Reine|Ch[âa]tenay[-‑‐ ]Malabry|Ch[âa]tillonClamart|Chaville|Clichy|Colombes|Courbevoie|Fontenay[-‑‐ ]aux[-‑‐ ]Roses|Garches|Gennevilliers|Issy[-‑‐ ]les[-‑‐ ]Moulineaux|La[-‑‐ ]Garenne[-‑‐ ]Colombes|Le[-‑‐ ]Plessis[-‑‐ ]Robinson|Levallois[-‑‐ ]Perret|Malakoff|Meudon|Monrouge|Nanterre|Neuilly[-‑‐ ]sur[-‑‐ ]Seine|Puteaux|Rueil[-‑‐ ]Malmaison|Sceaux|Sèvres|Suresnes|Villeneuve[-‑‐ ]la[-‑‐ ]Garenne) 92\d\d\d|(?:Aubervilliers|Aulnay[-‑‐ ]sous[-‑‐ ]Bois|Bagnolet|Bobigny|Bondy|Clichy[-‑‐ ]sous[-‑‐ ]Bois|Drancy|[ÉE]pinay[-‑‐ ]sur[-‑‐ ]Seine|La[-‑‐ ]Courneuve|Le[-‑‐ ]Blanc[-‑‐ ]Mesnil|Gagny|Les[-‑‐ ]Lilas|Livry[-‑‐ ]Gargan|Montfermeil|Montreuil|Neuilly[-‑‐ ]sur[-‑‐ ]Marne|Noisy[-‑‐ ]le[-‑‐ ]Grand|Noisy[-‑‐ ]le[-‑‐ ]Sec|Pantin|Pierrefitte[-‑‐ ]sur[-‑‐ ]Seine|Romainville|Rosny[-‑‐ ]sous[-‑‐ ]Bois|Saint[-‑‐ ]Denis|Saint[-‑‐ ]Ouen|Sevran|Stains|Tremblay[-‑‐ ]en[-‑‐ ]France|Villemomble|Villepinte) 93\d\d\d|(?:Alfortville|Champigny[-‑‐ ]sur[-‑‐ ]Marne|Choisy[-‑‐ ]le[-‑‐ ]Roi|Cr[ée]teil|Fontenay[-‑‐ ]sous[-‑‐ ]Bois|Ivry[-‑‐ ]sur[-‑‐ ]Seine|Maisons[-‑‐ ]Alfort|Saint[-‑‐ ]Maur[-‑‐ ]des[-‑‐ ]Foss[ée]s|Villejuif|Vincennes|Vitry[-‑‐ ]sur[-‑‐ ]Seine) 94\d\d\d|(?:Argenteuil|Bezons|Cergy|Ermont|Franconville|Garge[-‑‐ ]l[èe]s[-‑‐ ]Gonesse|Gonesse|Goussainville|Herblay|Pontoise|Sannois|Sarcelles|Taverny|Villier[-‑‐ ]le[-‑‐ ]Bel) 95\d\d\d|(?:Baie[-‑‐ ]Mahault|Capesterare[-‑‐ ]Belle[-‑‐ ]Eau|Lamentin|Le[-‑‐ ]Gosier|Le[-‑‐ ]Moule|Les[-‑‐ ]Abymes|Morne[-‑‐ ][àa][-‑‐ ]l['´‘’′]eau|Petit[-‑‐ ]Bourg|Point[-‑‐ ][àa][-‑‐ ]Pitre|Saint[-‑‐ ]Martin|Sainte[-‑‐ ]Anne|Sainte[-‑‐ ]Rose) 971\d\d|(?:Ducos|Fort[-‑‐ ]de[-‑‐ ]France|Le[-‑‐ ]Fran[çc]ois|Le[-‑‐ ]Lamentin|Le[-‑‐ ]Robert|Saint[-‑‐ ]Joseph|Rivi[èè]re[-‑‐ ]Pilote|Sainte[-‑‐ ]Marie|Schoelcher) 972\d\d|(?:Cayenne|Kourou|Mana|Matoury|Remire[-‑‐ ]Montjoly|Saint[-‑‐ ]Laurent[-‑‐ ]du[-‑‐ ]Maroni) 973\d\d|(?:La[-‑‐ ]Possession|Le[-‑‐ ]Port|Le[-‑‐ ]Tampon|Saint[-‑‐ ]Andr[ée]|Saint[-‑‐ ]Beno[iî]t|Saint[-‑‐ ]Denis|Saint[-‑‐ ]Joseph|Saint[-‑‐ ]Leu|Saint[-‑‐ ]Louis|Saint[-‑‐ ]Paul|Saint[-‑‐ ]Pierre|Sainte[-‑‐ ]Marie|Sainte[-‑‐ ]Suzanne) 974\d\d)\b</regexp>
+                <message>Le code postal doit être avant le nom de la ville pour les adresses postales en France.</message>
+                <example correction="">5 Rue de l’église, <marker>Brest 29200</marker>.</example>
+                <example>5 Rue de l’église, 29200 Brest.</example>
+            </rule>
+            <rule>
+                <regexp type="exact">\b(?:01[  \.·,-]\d\d\d (?:Bourg[-‑‐  ]en[-‑‐  ]Bresse|Oyonnax|Amb[ée]rieu[-‑‐  ]en[-‑‐  ]Bugey)|02[  \.·,-]\d\d\d (?:Saint[-‑‐  ]Quentin|Soissons|Laon|Tergnier)|03[  \.·,-]\d\d\d (?:Monlu[çc]on|Vischy|Moulins|Cusset|Yzeure|Dom[ée]rat)|04[  \.·,-]\d\d\d (?:Manosque|Digne[-‑‐  ]les[-‑‐  ]Bains|Sisteron)|05[  \.·,-]\d\d\d (?:Gap|Brian[çc]on|Embrun)|06[  \.·,-]\d\d\d (?:Antibes|Cagnes[-‑‐  ]sur[-‑‐  ]Mer|Cannes|Grasse|Nice)|07[  \.·,-]\d\d\d (?:Annonay|Aubennas)|08[  \.·,-]\d\d\d (?:Charleville[-‑‐  ]M[ée]zi[èe]res|Givet|Rethel|Revin|Sedan)|09[  \.·,-]\d\d\d (?:Foix|Pamiers)|10[  \.·,-]\d\d\d (?:La[-‑‐  ]Chapelle[-‑‐  ]Saint[-‑‐  ]Luc|Romily[-‑‐  ]sur[-‑‐  ]Seine|Saint[-‑‐  ]Andr[ée][-‑‐  ]les[-‑‐  ]Vergers|Troyes)|11[  \.·,-]\d\d\d (?:Carcassonne|Castelnaudary|Limoux|Narbonne)|12[  \.·,-]\d\d\d (?:Onet[-‑‐  ]le[-‑‐  ]Ch[âa]teau|Milau|Rodez|Villefranche[-‑‐  ]de[-‑‐  ]Rouergue)|13[  \.·,-]\d\d\d (?:Aix[-‑‐  ]en[-‑‐  ]Provence|Allauch|Arles|Aubagne|Fos[-‑‐  ]sur[-‑‐  ]Mer|Gardanne|Istres|La[-‑‐  ]Ciotat|Les[-‑‐  ]Pennes[-‑‐  ]Mirabeau|Marignane|Marseille|Martigues|Miramas|Port[-‑‐  ]de[-‑‐  ]Bouc|Salon[-‑‐  ]de[-‑‐  ]Provence|Tarascon|Vitrolles)|14[  \.·,-]\d\d\d (?:Bayeux|Caen|Ifs|Lisieux|H[ée]rouville[-‑‐  ]Saint[-‑‐  ]Clair|Mondeville|Vire)|15[  \.·,-]\d\d\d (?:Aurillac|Saint[-‑‐  ]Flour)|16[  \.·,-]\d\d\d (?:Angoul[èêe]me|Cognac|Soyaux)|17[  \.·,-]\d\d\d (?:La[-‑‐  ]Rochelle|Rochefort|Royan|Saintes)|18[  \.·,-]\d\d\d (?:Bourges|Vierzon)|19[  \.·,-]\d\d\d (?:Brive[-‑‐  ]la[-‑‐  ]Guaillarde|Tulle|Ussel)|(?:Ajaccio|Porto[-‑‐  ]Vecchio|Sart[èe]ne)[  \.·,-]2[A0]\d\d\d|(?:Bastia|Calvi|Corte)[  \.·,-]2[B0]\d\d\d|21[  \.·,-]\d\d\d (?:Beaune|Chenôve|Chevigny[-‑‐  ]Saint[-‑‐  ]Sauveur|Dijon|Quetigny|Talant)|22[  \.·,-]\d\d\d (?:Dinan|Lannion|Pl[ée]rin|Ploufragan|Saint[-‑‐  ]Brieuc)|23[  \.·,-]\d\d\d (?:Aubusson|La[-‑‐  ]Souterraine|Gu[éé]ret)|24[  \.·,-]\d\d\d (?:Bergerac|P[é]rigneux)|25[  \.·,-]\d\d\d (?:Audincourt|Besan[çc]on|Bethoncourt|Montb[ée]liard|Pontarlier|Valentigney)|26[  \.·,-]\d\d\d (?:Bourg[-‑‐  ]l[èe]s[-‑‐  ]Valence|Mont[ée]limar|Pierrelatte|Romans[-‑‐  ]sur[-‑‐  ]Is[èe]re|Valence)|27[  \.·,-]\d\d\d (?:Bernay|[ÉE]vreux|Gisors|Louviers|Val[-‑‐  ]de[-‑‐  ]Reuil|Vernon)|28[  \.·,-]\d\d\d (?:Chartres|Ch[âa]teaudun|Dreux|Lucé|Mainvilliers|Nogent[-‑‐  ]le[-‑‐  ]Rotrou|Vernouillet)|29[  \.·,-]\d\d\d (?:Brest|Guipavas|Concarneau|Douarnenez|Fouesnant|Landerneau|Landivisau|Le[-‑‐  ]Relecq[-‑‐  ]Kerhuon|Morlaix|Plougastel[-‑‐  ]Daoulas|Plouzané|Quimper|Quimperlé)|30[  \.·,-]\d\d\d (?:Alès|Beaucaire|Bagnol[-‑‐  ]sur[-‑‐  ]C[èe]ze|N[îi]mes|Saint[-‑‐  ]Gilles|Vauvert|Villeneuve[-‑‐  ]les[-‑‐  ]Avignon)|31[  \.·,-]\d\d\d (?:Blagnac|Colomiers|Cugnaux|Muret|Plaisance[-‑‐  ]du[-‑‐  ]Touch|Toulouse|Tournefeuille) 31\d\d\d|32[  \.·,-]\d\d\d (?:Auch|Condom)|33[  \.·,-]\d\d\d (?:Ambar[èe]s[-‑‐  ]et[-‑‐  ]Lagrave|Arcachon|B[èe]gles|Bruges|Blanquefort|Bordeaux|Cenon|Cestas|Eysines|Floirac|Gradignan|Gujan[-‑‐  ]Mestras|Le[-‑‐  ]Bouscat|Lormont|Mérignac|Pessac|Talence|Villenave[-‑‐  ]d['´‘’′]Ornon|Saint[-‑‐  ]M[ée]dard[-‑‐  ]en[-‑‐  ]Jalles)|34[  \.·,-]\d\d\d (?:Agde|B[ée]ziers|Castelnau[-‑‐  ]le[-‑‐  ]Lez|Frontignan|Lattes|Lunel|Mauguio|Montpellier|Sète)|35[  \.·,-]\d\d\d (?:Betton|Bruz|Cesson[-‑‐  ]Sévigné|Dinard|Foug[èe]res|Pacé|Redon|Rennes|Saint[-‑‐  ]Malo|Vitré)|36[  \.·,-]\d\d\d (?:Ch[âa]teauroux|Déols|Issoudun|Le[-‑‐  ]Blanc)|37[  \.·,-]\d\d\d (?:Amboise|Joué[-‑‐  ]l[èe]s[-‑‐  ]Tours|Saint[-‑‐  ]Avertin|Saint[-‑‐  ]Cyr[-‑‐  ]sur[-‑‐  ]Loire|Saint[-‑‐  ]Pierre[-‑‐  ]des[-‑‐  ]Corps|Tours)|38[  \.·,-]\d\d\d (?:Bourgoin[-‑‐  ]Jallieu|[ÉE]chirolles|Fontaine|Grenoble|Maylan|Saint[-‑‐  ][ÉE]gr[èe]ve|Saint[-‑‐  ]Martin[-‑‐  ]d['´‘’′]H[èe]res|Vienne|Villefontaine|Voiron)|39[  \.·,-]\d\d\d (?:Champagnole|Dole|Lons[-‑‐  ]le[-‑‐  ]Saunier|Morez|Saint[-‑‐  ]Claude)|40[  \.·,-]\d\d\d (?:Biscarrosse|Capbreton|Dax|Mont[-‑‐  ]de[-‑‐  ]Marsan|Saint[-‑‐  ]Paul[-‑‐  ]l[èe]s[-‑‐  ]Dax|Tarnos)|41[  \.·,-]\d\d\d (?:Blois|Romorantin[-‑‐  ]Lanthenay|Vend[ôo]pme)|42[  \.·,-]\d\d\d (?:Firminy|Montbrison|Rive[-‑‐  ]de[-‑‐  ]Gier|Saint[-‑‐  ]Chamond|Saint[-‑‐  ][ÉE]tienne|Roanne)|43[  \.·,-]\d\d\d (?:Brioude|Le[-‑‐  ]Puy[-‑‐  ]en[-‑‐  ]Velay|Monistrol[-‑‐  ]sur[-‑‐  ]Loire)|44[  \.·,-]\d\d\d (?:Bouguenais|Carquefou|Ch[âa]teaubriant|Co[ëe]ron|Gu[ée]rande|Nantes|Pornic|Pornichet|La[-‑‐  ]Baule[-‑‐  ]Escoublac|La[-‑‐  ]Chapelle[-‑‐  ]sur[-‑‐  ]Erdre|Orvault|Rezé|Saint[-‑‐  ]Herblain|Saint[-‑‐  ]Nazaire|Saint[-‑‐  ]S[ée]bastien[-‑‐  ]sur[-‑‐  ]Loire|Sainte[-‑‐  ]Luce[-‑‐  ]sur[-‑‐  ]Loire|Vertou)|45[  \.·,-]\d\d\d (?:Fleury[-‑‐  ]les[-‑‐  ]Aubrais|Gien|Montargis|Olivet|Orléans|Saint[-‑‐  ]Jean[-‑‐  ]de[-‑‐  ]Braye|Saint[-‑‐  ]Jean[-‑‐  ]de[-‑‐  ]la[-‑‐  ]Ruelle|Saran)|46[  \.·,-]\d\d\d (?:Cahors|Figeac|Gourdon)|47[  \.·,-]\d\d\d (?:Agen|Marmande|N[ée]rac|Tonneins|Villeneuve[-‑‐  ]sur[-‑‐  ]Lot)|48[  \.·,-]\d\d\d (?:Marvejols|Mende)|49[  \.·,-]\d\d\d (?:Angers|Avrillé|Cholet|Saumur)|50[  \.·,-]\d\d\d (?:Avranches|Cherbourg|Coutances|[ÉE]queurdreville[-‑‐  ]Hainneville|Granville|Octeville|Tourlaville|Saint[-‑‐  ]L[ôo]|Valognes)|51[  \.·,-]\d\d\d (?:B[ée]theny|Ch[âa]lons[-‑‐  ]en[-‑‐  ]Champagne|Cormontreuil|[ÉE]pernay|Reims|Tinqueux|Vitry[-‑‐  ]le[-‑‐  ]Fran[çc]ois)|52[  \.·,-]\d\d\d (?:Chaumont|Langres|Saint[-‑‐  ]Dizier)|53[  \.·,-]\d\d\d (?:[ÉE]vron|Ch[âa]teau[-‑‐  ]Gontier|Laval|Mayenne)|54[  \.·,-]\d\d\d (?:Nancy|Lunéville|Toul|Vandœuvre[-‑‐  ]l[èe]s[-‑‐  ]Nancy|Villiers[-‑‐  ]l[èe]s[-‑‐  ]Nancy)|55[  \.·,-]\d\d\d (?:Commercy|Bar[-‑‐  ]le[-‑‐  ]Duc|Saint[-‑‐  ]Mihiel|Verdun)|56[  \.·,-]\d\d\d (?:Auray|Carnac|Gourin|Guidel|Hennebont|Larmor[-‑‐  ]Plage|Lorient|Ploemeur|Pontivy|Vannes|Lanester)|57[  \.·,-]\d\d\d (?:Creutzwald|Fameck|Florange|Forbach|Freyming[-‑‐  ]Merlebach|Hayange|Marly|Metz|Montigny[-‑‐  ]l[èe]s[-‑‐  ]Metz|Rombas|Saint[-‑‐  ]Avold|Sarrebourg|Sarreguemines|Stiring[-‑‐  ]Wendel|Thionville|Woippy|Yutz)|58[  \.·,-]\d\d\d (?:Cosne[-‑‐  ]Cours[-‑‐  ]sur[-‑‐  ]Loire|Decize|Nevers|Varennes[-‑‐  ]Vauzelles)|59[  \.·,-]\d\d\d (?:Armenti[èe]re|Coudekerque[-‑‐  ]Branche|Douai|Cambrai|Dunkerque|Grande[-‑‐  ]Synthe|Lambersart|Lille|Maubeuge|Roubaix|Saint[-‑‐  ]Paul[-‑‐  ]sur[-‑‐  ]Mer|Tourcoing|Villeneuve[-‑‐  ]d['´‘’′]Ascq|Valenciennes|Wattrelos)|60[  \.·,-]\d\d\d (?:Beauvais|Compi[èe]gne|Creil|M[ée]ru|Nogent[-‑‐  ]sur[-‑‐  ]Oise|Noyon|Senlis)|61[  \.·,-]\d\d\d (?:Alen[çc]on|Argentan|Flers)|62[  \.·,-]\d\d\d (?:Arras|Avion|Berck|B[ée]thune|Boulogne[-‑‐  ]sur[-‑‐  ]Mer|Bruay[-‑‐  ]la[-‑‐  ]Buissi[èe]re|Calais|Carvin|Harnes|H[ée]nin[-‑‐  ]Beaumont|Lens|Lièvin|Longuenesse|Outreau|Saint[-‑‐  ]Omer)|63[  \.·,-]\d\d\d (?:Aubi[èe]re|Beaumont|Chamali[èe]res|Clermont[-‑‐  ]Ferrand|Cournon[-‑‐  ]d['´‘’′]Auvergne|Gerzat|Issoire|Riom|Thiers)|64[  \.·,-]\d\d\d (?:Anglet|Bayone|Biarritz|Bill[èe]re|Hendaye|Lons|Pau|Saint[-‑‐  ]Jean[-‑‐  ]de[-‑‐  ]Luz)|65[  \.·,-]\d\d\d (?:Tarbes|Lourdes)|66[  \.·,-]\d\d\d (?:Argel[èe]s[-‑‐  ]sur[-‑‐  ]Mer|Canet[-‑‐  ]en[-‑‐  ]Roussillon|Perpignan|Saint[-‑‐  ]Cyprien|Saint[-‑‐  ][ÈE]st[èe]ve)|67[  \.·,-]\d\d\d (?:Bischheim|Bischwiller|Haguenau|Illkirch[-‑‐  ]Graffenstaden|Lingolsheim|Ostwald|Saverne|Schiltigheim|Sélestat|Strasbourg)|68[  \.·,-]\d\d\d (?:Colmar|Illzach|Kingersheim|Mulhouse|Saint[-‑‐  ]Louis|Riedisheim|Rixheim|Wittenheim)|69[  \.·,-]\d\d\d (?:Bron|Caluire[-‑‐  ]et[-‑‐  ]Cuire|[ÉE]cully|Givors|Lyon|Meyzieu|Mions|Oullins|Rillieux[-‑‐  ]la[-‑‐  ]Pape|Saint[-‑‐  ]Priest|Sainte[-‑‐  ]Foy[-‑‐  ]l[èe]s[-‑‐  ]Lyon|Vaulx[-‑‐  ]en[-‑‐  ]Velin|V[ée]nissieux|Villeurbanne|Villefranche[-‑‐  ]sur[-‑‐  ]Sa[ôo]ne)|70[  \.·,-]\d\d\d (?:H[ée]ricourt|Lure|Vesoul)|71[  \.·,-]\d\d\d (?:Autun|Chalon[-‑‐  ]sur[-‑‐  ]Sa[ôo]ne|Le[-‑‐  ]Creusot|M[âa]con|Montceau[-‑‐  ]les[-‑‐  ]Mines|Saint[-‑‐  ]Vallier)|72[  \.·,-]\d\d\d (?:Allones|Coulaines|La[-‑‐  ]Ferté[-‑‐  ]Bernard|La[-‑‐  ]Fl[èe]che|Le[-‑‐  ]Mans|Sablé[-‑‐  ]sur[-‑‐  ]Sarthe)|73[  \.·,-]\d\d\d (?:Aix[-‑‐  ]les[-‑‐  ]Bains|Albertville|Chambéry)|74[  \.·,-]\d\d\d (?:Annecy|Annecy[-‑‐  ]le[-‑‐  ]Vieux|Annemasse|Bonneville|Cluses|Cran[-‑‐  ]Gevrier|Rumily|Sallanches|Seynod|Thonon[-‑‐  ]les[-‑‐  ]Bains)|75[  \.·,-]\d\d\d Paris|76[  \.·,-]\d\d\d (?:Barentin|Bois[-‑‐  ]Guillaume|Bolbec|Canteleu|Dieppe|F[ée]camp|Elbeuf|Le[-‑‐  ]Grand[-‑‐  ]Quevilly|Le[-‑‐  ]Havre|Marommes|Mont[-‑‐  ]Saint[-‑‐  ]Aignan|Montvilliers|Oissel|Rouen|Saint[-‑‐  ][ÉE]tienne[-‑‐  ]du[-‑‐  ]Rouvray|Sotteville[-‑‐  ]l[èe]s[-‑‐  ]Rouen|Yvetot)|77[  \.·,-]\d\d\d (?:Champs[-‑‐  ]sur[-‑‐  ]Marnes|Chelles|Combs[-‑‐  ]la[-‑‐  ]Ville|Dammarie[-‑‐  ]les[-‑‐  ]lys|Lagny[-‑‐  ]sur[-‑‐  ]Marne|Le[-‑‐  ]Mée[-‑‐  ]sur[-‑‐  ]Seine|Meaux|Melun|Ozoir[-‑‐  ]la[-‑‐  ]Ferri[èe]re|Pontault[-‑‐  ]Combault|Roissy[-‑‐  ]en[-‑‐  ]Brie|Savigny[-‑‐  ]le[-‑‐  ]Temple|Torcy|Villeparisis)|78[  \.·,-]\d\d\d (?:Anchères|Chatou|Conflas[-‑‐  ]Sainte[-‑‐  ]Honorine|[ÉE]lancourt|Guyancourt|Houilles|La[-‑‐  ]Celle[-‑‐  ]Saint[-‑‐  ]Cloud|Le[-‑‐  ]Chesnay|Le[-‑‐  ]Pecq|Le[-‑‐  ]V[ée]sinet|Les[-‑‐  ]Clayes[-‑‐  ]sous[-‑‐  ]Bois|Les[-‑‐  ]Mureaux|Maison[-‑‐  ]Laffitte|Limay|Mantes[-‑‐  ]la[-‑‐  ]Jolie|Mantes[-‑‐  ]la[-‑‐  ]Ville|Marly[-‑‐  ]le[-‑‐  ]Roi|Maurepas|Montigny[-‑‐  ]le[-‑‐  ]Bretonneux|Plaisir|Poissy|Rambouillet|Saint[-‑‐  ]Germain[-‑‐  ]en[-‑‐  ]Laye|Satrouville|Trappes|V[ée]lizy[-‑‐  ]Villacoublay|Versailles|Viroflay)|79[  \.·,-]\d\d\d (?:Bresuire|Maul[ée]on|Partenay|Niort|Thouars)|80[  \.·,-]\d\d\d (?:Abbeville|Amiens)|81[  \.·,-]\d\d\d (?:Albi|Castres|Gaillac|Graulhet|Marzamet)|82[  \.·,-]\d\d\d (?:Castelsarrasin|Caussade|Moissac|Montauban)|83[  \.·,-]\d\d\d (?:Brignoles|Draguignan|Fr[ée]jus|Hy[èe]res|La[-‑‐  ]Crau|La[-‑‐  ]Garde|La[-‑‐  ]Seyne[-‑‐  ]sur[-‑‐  ]Mer|La[-‑‐  ]Vilette[-‑‐  ]du[-‑‐  ]Var|Saint[-‑‐  ]Rapha[ëe]l|Six[-‑‐  ]Fours[-‑‐  ]le[-‑‐  ]Plages|Toulon)|84[  \.·,-]\d\d\d (?:Avignon|Carpentras|Cavaillon|Orange|Pertuis|Sorgues)|85[  \.·,-]\d\d\d (?:Challans|Fontenay[-‑‐  ]le[-‑‐  ]Comte|La[-‑‐  ]Roche[-‑‐  ]sur[-‑‐  ]Yon|Les[-‑‐  ]Herbies|Les[-‑‐  ]Sables[-‑‐  ]d['´‘’′]Olonne)|86[  \.·,-]\d\d\d (?:Bruxerolles|Ch[âa]tellerault|Chauvigny|Loudun|Poitiers)|87[  \.·,-]\d\d\d (?:Limoges|Panazol|Saint[-‑‐  ]Julien)|88[  \.·,-]\d\d\d (?:[ÉE]pinal|Saint[-‑‐  ]Di[ée])|89[  \.·,-]\d\d\d (?:Auxerre|Avallon|Joigny|Sens)|90[  \.·,-]\d\d\d (?:Beaucourt|Belfort|Delle)|91[  \.·,-]\d\d\d (?:Athis[-‑‐  ]Mons|Br[ée]tigny[-‑‐  ]sur[-‑‐  ]Orge|Brunoy|Bures[-‑‐  ]sur[-‑‐  ]Yvette|Chilly[-‑‐  ]Mazarin|Corbeil[-‑‐  ]Essonnes|Courcouronnes|Dourdan|Draveil|[ÉE]tames|[ÉE]vry|Gif[-‑‐  ]sur[-‑‐  ]Yvette|Grigny|Juvisy[-‑‐  ]sur[-‑‐  ]Orge|Igny|Les[-‑‐  ]Ulis|Longjumeau|Massy|Mennecy|Montgeron|Morangis|Morsang[-‑‐  ]sur[-‑‐  ]Orge|Orsay|Palaiseau|Ris[-‑‐  ]Orangis|Saint[-‑‐  ]Genevi[èe]ve[-‑‐  ]des[-‑‐  ]Bois|Saint[-‑‐  ]Michel[-‑‐  ]sur[-‑‐  ]Orge|Savigny[-‑‐  ]sur[-‑‐  ]Orge|Verri[èe]res[-‑‐  ]le[-‑‐  ]Buisson|Villebon[-‑‐  ]sur[-‑‐  ]Yvette|Vigneux[-‑‐  ]sur[-‑‐  ]Seine|Viry[-‑‐  ]Ch[âa]tillon|Yerres)|92[  \.·,-]\d\d\d (?:Antony|Asni[èe]res[-‑‐  ]sur[-‑‐  ]Seine|Bagneux|Bois[-‑‐  ]Colombes|Boulogne[-‑‐  ]Billancourt|Bourg[-‑‐  ]la[-‑‐  ]Reine|Ch[âa]tenay[-‑‐  ]Malabry|Ch[âa]tillonClamart|Chaville|Clichy|Colombes|Courbevoie|Fontenay[-‑‐  ]aux[-‑‐  ]Roses|Garches|Gennevilliers|Issy[-‑‐  ]les[-‑‐  ]Moulineaux|La[-‑‐  ]Garenne[-‑‐  ]Colombes|Le[-‑‐  ]Plessis[-‑‐  ]Robinson|Levallois[-‑‐  ]Perret|Malakoff|Meudon|Monrouge|Nanterre|Neuilly[-‑‐  ]sur[-‑‐  ]Seine|Puteaux|Rueil[-‑‐  ]Malmaison|Sceaux|Sèvres|Suresnes|Villeneuve[-‑‐  ]la[-‑‐  ]Garenne)|93[  \.·,-]\d\d\d (?:Aubervilliers|Aulnay[-‑‐  ]sous[-‑‐  ]Bois|Bagnolet|Bobigny|Bondy|Clichy[-‑‐  ]sous[-‑‐  ]Bois|Drancy|[ÉE]pinay[-‑‐  ]sur[-‑‐  ]Seine|La[-‑‐  ]Courneuve|Le[-‑‐  ]Blanc[-‑‐  ]Mesnil|Gagny|Les[-‑‐  ]Lilas|Livry[-‑‐  ]Gargan|Montfermeil|Montreuil|Neuilly[-‑‐  ]sur[-‑‐  ]Marne|Noisy[-‑‐  ]le[-‑‐  ]Grand|Noisy[-‑‐  ]le[-‑‐  ]Sec|Pantin|Pierrefitte[-‑‐  ]sur[-‑‐  ]Seine|Romainville|Rosny[-‑‐  ]sous[-‑‐  ]Bois|Saint[-‑‐  ]Denis|Saint[-‑‐  ]Ouen|Sevran|Stains|Tremblay[-‑‐  ]en[-‑‐  ]France|Villemomble|Villepinte)|94[  \.·,-]\d\d\d (?:Alfortville|Champigny[-‑‐  ]sur[-‑‐  ]Marne|Choisy[-‑‐  ]le[-‑‐  ]Roi|Cr[ée]teil|Fontenay[-‑‐  ]sous[-‑‐  ]Bois|Ivry[-‑‐  ]sur[-‑‐  ]Seine|Maisons[-‑‐  ]Alfort|Saint[-‑‐  ]Maur[-‑‐  ]des[-‑‐  ]Foss[ée]s|Villejuif|Vincennes|Vitry[-‑‐  ]sur[-‑‐  ]Seine)|95[  \.·,-]\d\d\d (?:Argenteuil|Bezons|Cergy|Ermont|Franconville|Garge[-‑‐  ]l[èe]s[-‑‐  ]Gonesse|Gonesse|Goussainville|Herblay|Pontoise|Sannois|Sarcelles|Taverny|Villier[-‑‐  ]le[-‑‐  ]Bel)|971[  \.·,-]\d\d (?:Baie[-‑‐  ]Mahault|Capesterare[-‑‐  ]Belle[-‑‐  ]Eau|Lamentin|Le[-‑‐  ]Gosier|Le[-‑‐  ]Moule|Les[-‑‐  ]Abymes|Morne[-‑‐  ][àa][-‑‐  ]l['´‘’′]eau|Petit[-‑‐  ]Bourg|Point[-‑‐  ][àa][-‑‐  ]Pitre|Saint[-‑‐  ]Martin|Sainte[-‑‐  ]Anne|Sainte[-‑‐  ]Rose)|972[  \.·,-]\d\d (?:Ducos|Fort[-‑‐  ]de[-‑‐  ]France|Le[-‑‐  ]Fran[çc]ois|Le[-‑‐  ]Lamentin|Le[-‑‐  ]Robert|Saint[-‑‐  ]Joseph|Rivi[èè]re[-‑‐  ]Pilote|Sainte[-‑‐  ]Marie|Schoelcher)|973[  \.·,-]\d\d (?:Cayenne|Kourou|Mana|Matoury|Remire[-‑‐  ]Montjoly|Saint[-‑‐  ]Laurent[-‑‐  ]du[-‑‐  ]Maroni)|974[  \.·,-]\d\d (?:La[-‑‐  ]Possession|Le[-‑‐  ]Port|Le[-‑‐  ]Tampon|Saint[-‑‐  ]Andr[ée]|Saint[-‑‐  ]Beno[iî]t|Saint[-‑‐  ]Denis|Saint[-‑‐  ]Joseph|Saint[-‑‐  ]Leu|Saint[-‑‐  ]Louis|Saint[-‑‐  ]Paul|Saint[-‑‐  ]Pierre|Sainte[-‑‐  ]Marie|Sainte[-‑‐  ]Suzanne))\b</regexp>
+                <message>Écrivez le code postal sans séparateur.</message>
+                <example correction="">Rue de l’église, <marker>29 200 Brest</marker>.</example>
+                <example correction="">Rue de l’église, <marker>29 200 Brest</marker>.</example>
+                <example correction="">Rue de l’église, <marker>29,200 Brest</marker>.</example>
+                <example correction="">Rue de l’église, <marker>29.200 Brest</marker>.</example>
+                <example correction="">Rue de l’église, <marker>29·200 Brest</marker>.</example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="ADRESSES_BELGIQUE" name="Format des adresses en Belgique">
+            <!-- TODO: improve this rule to detect other problems in French addresses -->
+            <rule>
+                <regexp type="exact" mark="1">\b(?:Rue|Ruelle|Avenue|Av\.|Place|Pl\.|Boulevard|Boul\.|Impasse|Imp.|Chemin|Allée|Chaussée|Montée|Passage)[  \t][^,\n]+\s*[,\n]\s*(\p{Lu}[^,%\d\n]+[  \t]\d{4})\s*[,\n]\s*(?:BELGIQUE|BELGIUM|BELGI[ËE]N?)\b</regexp>
+                <message>Le code postal doit être avant le nom de la ville pour les adresses postales en Belgique.</message>
+                <example correction="">Rue de Louvain 5, <marker>BRUXELLES 1000</marker>, BELGIQUE.</example>
+                <example>Rue de Louvain 5, 1000 BRUXELLES, BELGIQUE.</example>
+            </rule>
+            <rule>
+                <!-- When country is not specified, we can still guess that the address
+             is in Belgium for some biggest well known cities -->
+                <regexp type="exact" mark="1">\b(?:Rue|Ruelle|Avenue|Av\.|Place|Pl\.|Boulevard|Boul\.|Impasse|Imp.|Chemin|Allée|Chaussée|Montée|Passage)[  \t][^,\n]+\s*[,\n]\s*((?:ALOST|ANDERLECHT|ANVERS|ANTERPEN|BRUGES|BRUGGE|BRUXELLES|BR[UÜ]SSEL|BRUSELS|CHARLEROI|COURTRAI|GAND|GENK|HASSELT|IXELLES|LA[-‑‐   ]LOUVI[ÈE]RE|LI[ÈE]GE|LOUVAIN|LUIK|MALINES|MOLENBEEK-SAINT-JEAN|MONS|MOUSCRON|NAMUR|OSTENDE|SARAING|SCHA[AE]RBEEK|ROULERS|TOURNAI|UCCLE|UKKEL|VERVIERS)[  \t]\d{4})\b</regexp>
+                <message>Le code postal doit être avant le nom de la ville pour les adresses postales en Belgique.</message>
+                <example correction="">Rue de Louvain, <marker>BRUXELLES 1000</marker>.</example>
+                <example>Rue de Louvain, 1000 BRUXELLES.</example>
+                <example>Rue de Louvain 5, 1000 BRUXELLES.</example>
+            </rule>
+        </rulegroup>
+        <rulegroup id="URL" name="URL incorrectes">
+            <url>https://fr.wikipedia.org/wiki/Uniform_Resource_Locator</url>
+            <rule>
+                <regexp type="exact">\b(?:https?://(?:wwww|ww)\.\S*|(?:^|(?&lt;=\s))(?:wwww|ww)\.[a-z0-9\-]+\.(?:com|edu|mil|net|gov|org|int|be|c[ahnz]|e[us]|f[ir]|d[ek]|i[elrst]|li|n[loz]|p[lt]|ru|se|u[ks]))\b</regexp>
+                <message>Il devrait probablement y avoir 3 w dans l’URL.</message>
+                <example correction="">Cliquez sur <marker>wwww.google.com</marker>.</example>
+                <example>Cliquez sur <marker>www.google.com</marker>.</example>
+                <example correction="">Cliquez sur <marker>http://wwww.google.com</marker>.</example>
+                <example>Cliquez sur <marker>http://www.google.com</marker>.</example>
+            </rule>
+            <rule>
+                <regexp type="exact">\b(?:https?|ftps?|telnet):(?:/|///)?[a-z]\S+\b</regexp>
+                <message>Il devrait probablement y en avoir 2 barres obliques dans l’URL.</message>
+                <example correction="">Cliquez sur <marker>http:/www.google.com</marker>.</example>
+                <example correction="">Cliquez sur <marker>http:www.google.com</marker>.</example>
+                <example>Cliquez sur <marker>http://www.google.com</marker>.</example>
+            </rule>
+            <rule>
+                <regexp type="exact">\b(?:https?|ftps?|telnet)///?[a-z]\S+\b</regexp>
+                <message>Il devrait probablement y en avoir un deux-points après le protocole dans l’URL.</message>
+                <example correction="">Cliquez sur <marker>http//www.google.com</marker>.</example>
+                <example>Cliquez sur <marker>http://www.google.com</marker>.</example>
+            </rule>
+            <rule>
+                <regexp type="exact">\b(?:mailto|news)://?[a-z]\S+\b</regexp>
+                <message>Les protocoles d’URL mailto: ou news: ne devraient pas être suivis de deux barres obliques //.</message>
+                <example correction=""><marker>mailto://john.doe.com</marker>.</example>
+                <example><marker>mailto:john.doe.com</marker>.</example>
+            </rule>
+            <rule>
+                <regexp type="exact">\b(?:https?|ftps?|telnet|file):\S*([\\{}|^`]|%(?![0-9a-f]{2}))\S*</regexp>
+                <message>L’URL contient un caractère invalide « \1 » selon RFC 1738. Les caractères spéciaux peuvent être encodés avec % suivi de deux chiffres hexadécimaux.</message>
+                <url>http://www.ietf.org/rfc/rfc1738.txt</url>
+                <example correction="">Cliquez sur <marker>http://foobar.com/%foo.html</marker></example>
+                <example>Cliquez sur <marker>http://foobar.com/%20foo.html</marker></example>
+                <example correction="">Cliquez sur <marker>http://foobar.com/^foo.html</marker></example>
+                <example correction="">Cliquez sur <marker>http://foobar.com/{foo.html</marker></example>
+                <example correction="">Cliquez sur <marker>http://foobar.com/|foo.html</marker></example>
+            </rule>
+        </rulegroup>
+    </category>
