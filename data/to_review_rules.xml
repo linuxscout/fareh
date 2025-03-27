@@ -588,4 +588,37 @@ org.languagetool.rules.patterns.PatternRuleTest$PatternRuleTestFailure: Test fai
                  <example type="incorrect" correction="في مليونين ومئتين وخمسة وأربعين ألفا وسبعمائة وواحد"><marker>في مليونان ومئتان وخمسة وأربعون ألفاً وسبعمائة وواحد</marker> صندوق.</example>   
 
             </rule>
+            
+            
+                                   <rule id="syntax_numeric_0004" name="تدقيق ألفاظ الأعداد">
+                                       
+<!--                                    تولد خطأ تراجعيا
+                                       يعني الجملة وتمييزها -->
+                <pattern>
+                    <marker>
+                    <token>في</token>
+                    <token postag="NN.*" postag_regexp="yes" min="0" max="14"/>
+                <token postag="NJ.*" postag_regexp="yes"><exception postag="NN.*" postag_regexp="yes"/></token>
+                </marker>
+                </pattern>
+                <filter class="org.languagetool.rules.ar.NumberPhraseFilter" args="previous:\1 previousPos:1 nextPos:-1 next:ok"/>
+                <message>التحقق من الأعداد
+                    </message>
+
+               <example type="incorrect" correction="في ثلاثين صندوقا"><marker>في ثلاثون صندوق</marker>.</example>   
+               <example type="incorrect" correction="في خمسة وثلاثين صندوقا"><marker>في خمسة وثلاثون صندوق.</marker></example>   
+                 <example type="incorrect" correction=" في خمسمائة واثنين وثلاثين صندوقا"><marker>في خمسمئة واثنان وثلاثون صندوق.</marker></example>   
+                 <example type="incorrect" correction="في ألف وخمسمائة واثنين وثلاثين صندوقا"><marker>في ألف وخمسمئة واثنين وثلاثون صندوق</marker>.</example>   
+                 
+<!--                                 <example type="incorrect" correction="في مليونين ومئتين وخمسة وأربعين ألفا وسبعمائة وواحد"><marker>في مليونان ومئتان وخمسة وأربعون ألفاً وسبعمائة وواحد</marker> صندوق.</example>   
+                 <example type="incorrect" correction="في مليونين ومئتين وخمسة وأربعين ألفا وسبعمائة وواحد"><marker>في مليونين ومئتان وخمسة وأربعون ألفاً وسبعمائة وواحد</marker> صندوق.</example>   
+                 <example type="incorrect" correction="في مليونين ومئتين وخمسة وأربعين ألفا وسبعمائة وواحد"><marker>في مليونين ومئتين وخمسة وأربعون ألفاً وسبعمائة وواحد</marker> صندوق.</example>  
+                 <example type="incorrect" correction="في خمسمائة وتسعة وثلاثين مليونا وتسعة وتسعين ألفا وستمائة وسبعة وثلاثين"><marker>في خمسمئة وتسعة وثلاثين مليون وتسعة وتسعون ألفا وستمئة وسبعة وثلاثين صندوقا.</marker></example>   
+              
+                 <example type="incorrect" correction="في خمسمائة وتسعة وثلاثين مليونا وتسعة وتسعين ألفا وستمائة وسبعة وثلاثين"><marker>في خمسمئة وتسعة وثلاثون مليون وتسعة وتسعون ألفا وستمئة وسبعة وثلاثين صندوقا.</marker></example>   
+              
+                 <example type="incorrect" correction="في خمسمائة وتسعة وثلاثين مليونا وتسعة وتسعين ألفا وستمائة وسبعة وثلاثين"><marker>في خمسمئة وتسعة وثلاثين مليون وتسعة وتسعون ألفا وستمئة وسبعة وثلاثين صندوقا.</marker></example> -->  
+                             <example type="incorrect" correction="في ثلاثين"><marker>في ثلاثون</marker> صندوقا.</example>   
+               <example type="incorrect" correction="في ثلاثين"><marker>في ثلاثون</marker>.</example>   
+            </rule>
   </rules>
